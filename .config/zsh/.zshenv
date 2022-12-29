@@ -18,28 +18,48 @@ pathprepend() {
     done
 }
 
-# Android Studio
-export ANDROID_HOME="$XDG_DATA_HOME"/android
-
 # ZSH
 export HISTFILE="$XDG_STATE_HOME"/zsh/history
 
 # GTK
 export GTK_THEME=Adwaita:dark
+export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
+
+# NPM
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME"/npm/npmrc
 
 # NVM
 export NVM_DIR="$XDG_DATA_HOME"/nvm
 
-# .NET config
-export DOTNET_ROOT=/usr/share/dotnet
-export DOTNET_CLI_TELEMETRY_OPTOUT=true
-export CLR_ICU_VERSION_OVERRIDE=72.1
-pathappend "/home/wellington/.dotnet/tools"
+# xinit
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
-# PATH
+# SSH
+SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+
+# LOCALE
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ADDRESS=pt_BR.UTF-8
+export LC_COLLATE=pt_BR.UTF-8
+export LC_CTYPE=pt_BR.UTF-8
+export LC_IDENTIFICATION=pt_BR.UTF-8
+export LC_MEASUREMENT=pt_BR.UTF-8
+export LC_MESSAGES=pt_BR.UTF-8
+export LC_MONETARY=pt_BR.UTF-8
+export LC_NAME=pt_BR.UTF-8
+export LC_NUMERIC=pt_BR.UTF-8
+export LC_PAPER=pt_BR.UTF-8
+export LC_TELEPHONE=pt_BR.UTF-8
+export LC_TIME=pt_BR.UTF-8
+
+# Flatapak
 pathappend "/var/lib/flatpak/exports/bin"
 pathappend "/var/lib/snapd/snap/bin"
-pathprepend "$HOME/bin" "$HOME/.local/bin"
+
+# pnpm
+export PNPM_HOME="$XDG_DATA_HOME"/pnpm
+export PATH="$PNPM_HOME:$PATH"
 
 # General
 export TERM=alacritty
@@ -47,13 +67,3 @@ export BROWSER=firefox
 export MAIL=thunderbird
 export EDITOR=nvim
 
-# KDE Plasma
-# export PLASMA_USE_QT_SCALING=1
-
-# Android
-#export ANDROID_HOME="$HOME/Android/Sdk"
-export ANDROID_HOME="/opt/android-sdk"
-#export ANDROID_SDK=/opt/android-sdk
-#pathappend "$ANDROID_HOME/tools"
-#pathappend "$ANDROID_HOME/platform-tools"
-export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1

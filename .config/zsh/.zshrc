@@ -1,19 +1,14 @@
-# zsh config file using Oh My ZSH https://ohmyz.sh/
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/wellington/.oh-my-zsh"
+export ZSH="$HOME/.local/share/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-
-# > source https://github.com/spaceship-prompt/spaceship-prompt
 ZSH_THEME="spaceship"
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -29,7 +24,7 @@ ZSH_THEME="spaceship"
 
 # Uncomment one of the following lines to change the auto-update behavior
 # zstyle ':omz:update' mode disabled  # disable automatic updates
-zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode auto      # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
@@ -79,19 +74,24 @@ VSCODE=code-insiders
 
 plugins=(
   git
-  git-prompt
+#  git-prompt
   dotnet
-  pip
+#  pip
   docker
   docker-compose
   tmux
-  firewalld
-  frontend-search
-  web-search
+#  firewalld
+#  frontend-search
+#  web-search
+#  thefuck
+
+#  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
+#  vi-mode
+
   vscode
   
 # > source https://github.com/zsh-users/zsh-autosuggestions 
-# zsh-autosuggestions
+#  zsh-autosuggestions
 
 # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
@@ -124,33 +124,11 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-#alias -g firefox="flatpak run org.mozilla.firefox"
-#alias -g google-chrome="flatpak run com.google.Chrome"
-#alias -g edge="flatpak run com.microsoft.Edge"
-#alias -g krita="flatpak run org.kde.krita"
-#alias -g ytmdesktop="flatpak run app.ytmdesktop.ytmdesktop"
-#alias -g anydesk="flatpak run com.anydesk.Anydesk"
-#alias -g spotify="flatpak run com.spotify.Client"
-#alias -g vlc="flatpak run org.videolan.VLC"
-#alias -g thunderbird="flatpak run org.mozilla.Thunderbird"
-#alias -g steam="flatpak run com.valvesoftware.Steam"
-#alias -g drawio="flatpak run com.jgraph.drawio.desktop"
-#alias -g emulator="/opt/android-sdk/emulator/emulator"
+
+# Nvidia Settings
+#nvidia-settings --config="$XDG_CONFIG_HOME"/nvidia/settings
 
 if [ -d '/usr/share/nvm' ]; then
     source /usr/share/nvm/init-nvm.sh
 fi
-
-[ -f /opt/miniconda3/etc/profile.d/conda.sh ] && source /opt/miniconda3/etc/profile.d/conda.sh
-
-autoload -U +X bashcompinit && bashcompinit
-source /usr/share/bash-completion/completions/az
-
-# pnpm
-export PNPM_HOME="/home/wellington/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
-# pnpm end
-
-# TheFuck
-eval $(thefuck --alias) 
 
