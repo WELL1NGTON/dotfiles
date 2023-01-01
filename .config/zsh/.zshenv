@@ -35,7 +35,7 @@ export NVM_DIR="$XDG_DATA_HOME"/nvm
 export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 
 # SSH
-SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
 # LOCALE
 export LANG=en_US.UTF-8

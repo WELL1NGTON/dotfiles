@@ -132,3 +132,4 @@ if [ -d '/usr/share/nvm' ]; then
     source /usr/share/nvm/init-nvm.sh
 fi
 
+neofetch

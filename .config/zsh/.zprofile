@@ -8,3 +8,5 @@ setxkbmap us -variant intl
 nitrogen --restore
 
 pcmanfm --daemon-mode --no-desktop
+
+nm-applet &
