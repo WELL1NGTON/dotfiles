@@ -1,4 +1,5 @@
 # Default Keyboard config
+
 # US International
 setxkbmap us -variant intl
 # # PT-BR ABNT2
@@ -6,3 +7,4 @@ setxkbmap us -variant intl
 
 nitrogen --restore
 
+pcmanfm --daemon-mode --no-desktop

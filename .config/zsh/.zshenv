@@ -67,3 +67,5 @@ export BROWSER=firefox
 export MAIL=thunderbird
 export EDITOR=nvim
 
+# .xinitrc
+export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
