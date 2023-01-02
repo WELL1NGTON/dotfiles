@@ -7,6 +7,10 @@ setxkbmap us -variant intl
 
 nitrogen --restore
 
-pcmanfm --daemon-mode --no-desktop
+# pcmanfm --daemon-mode --no-desktop
 
 nm-applet &
+
+birdtray &
+
+caffeine start &
