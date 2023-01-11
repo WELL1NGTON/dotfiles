@@ -74,26 +74,26 @@ VSCODE=code-insiders
 
 plugins=(
   git
-#  git-prompt
+  #  git-prompt
   dotnet
-#  pip
+  #  pip
   docker
   docker-compose
   tmux
-#  firewalld
-#  frontend-search
-#  web-search
-#  thefuck
+  #  firewalld
+  #  frontend-search
+  #  web-search
+  #  thefuck
 
-#  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
-#  vi-mode
+  #  https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
+  #  vi-mode
 
   vscode
-  
-# > source https://github.com/zsh-users/zsh-autosuggestions 
-#  zsh-autosuggestions
 
-# > source https://github.com/zsh-users/zsh-syntax-highlighting
+  # > source https://github.com/zsh-users/zsh-autosuggestions
+  #  zsh-autosuggestions
+
+  # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
 )
 
@@ -129,7 +129,7 @@ source $ZSH/oh-my-zsh.sh
 #nvidia-settings --config="$XDG_CONFIG_HOME"/nvidia/settings
 
 if [ -d '/usr/share/nvm' ]; then
-    source /usr/share/nvm/init-nvm.sh
+  source /usr/share/nvm/init-nvm.sh
 fi
 
 neofetch

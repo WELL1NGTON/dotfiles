@@ -14,3 +14,9 @@ nm-applet &
 birdtray &
 
 caffeine start &
+
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+picom &
+
+blueman-applet &
