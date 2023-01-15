@@ -132,4 +132,6 @@ if [ -d '/usr/share/nvm' ]; then
   source /usr/share/nvm/init-nvm.sh
 fi
 
+source "$XDG_CONFIG_HOME"/zsh/aliases
+
 neofetch
