@@ -12,6 +12,10 @@ x-scheme-handler/webcal=userapp-Thunderbird-0PGXX1.desktop
 text/calendar=userapp-Thunderbird-0PGXX1.desktop
 application/x-extension-ics=userapp-Thunderbird-0PGXX1.desktop
 x-scheme-handler/webcals=userapp-Thunderbird-0PGXX1.desktop
+image/png=qimgv.desktop
+application/x-gnome-saved-search=pcmanfm.desktop
+inode/directory=pcmanfm.desktop
+image/jpeg=org.xfce.ristretto.desktop
 
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-3A4RX1.desktop;
@@ -24,3 +28,5 @@ application/rss+xml=userapp-Thunderbird-7930X1.desktop;
 application/x-extension-rss=userapp-Thunderbird-7930X1.desktop;
 x-scheme-handler/webcal=userapp-Thunderbird-0PGXX1.desktop;
 x-scheme-handler/webcals=userapp-Thunderbird-0PGXX1.desktop;
+image/png=qimgv.desktop;
+image/jpeg=com.github.maoschanz.drawing.desktop;qimgv.desktop;org.xfce.ristretto.desktop;
