@@ -1,0 +1,12 @@
+{
+    "Lua.workspace.library": [
+        "${workspaceFolder}",
+        "/usr/share/awesome/lib",
+    ],
+    "Lua.diagnostics.globals": [
+        "awesome",
+        "client",
+        "screen",
+        "root",
+    ]
+}
