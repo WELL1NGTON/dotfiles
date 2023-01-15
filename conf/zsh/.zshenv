@@ -39,7 +39,7 @@ export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
 # LOCALE
 export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8:pt_BR.UTF-8
+export LANGUAGE=en_US:en:C:pt_BR
 export LC_ADDRESS=pt_BR.UTF-8
 export LC_COLLATE=pt_BR.UTF-8
 export LC_CTYPE=pt_BR.UTF-8
