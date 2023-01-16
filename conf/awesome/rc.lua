@@ -45,10 +45,16 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+local theme_path = gears.filesystem.get_xdg_config_home() .. "awesome/themes/default/theme.lua"
+
+if not gears.filesystem.file_readable(theme_path) then
+    theme_path = gears.filesystem.get_themes_dir() .. "default/theme.lua"
+end
+
+beautiful.init(theme_path)
 
 -- This is used later as the default terminal and editor to run.
-local terminal = "alacritty"
+local terminal = os.getenv("TERM") or "xterm"
 local editor = os.getenv("EDITOR") or "nano"
 local editor_cmd = terminal .. " -e " .. editor
 
@@ -233,6 +239,11 @@ local globalkeys = gears.table.join(
         -- Just a test to check if the zsh environment is working
         function()
             awful.spawn.with_shell("notify-send 'Test' '$EDITOR = " .. editor .. "'")
+            -- gears.filesystem.get_xdg_config_home()
+            awful.spawn.with_shell("notify-send 'Test' '$XDG_CONFIG_HOME = " ..
+                gears.filesystem.get_xdg_config_home() .. "'")
+            -- theme_path
+            awful.spawn.with_shell("notify-send 'Test' '$theme_path = " .. theme_path .. "'")
         end,
         { description = "test", group = "awesome" }
     ),
