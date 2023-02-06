@@ -471,6 +471,25 @@ awful.rules.rules = {
         }
     },
     {
+        rule_any = {
+            class = {
+                "awakened-poe-trade"
+            }
+        },
+        properties = {
+            border_width = 0,
+            border_color = beautiful.border_normal,
+            floating = true,
+            placement = awful.placement.stretch,
+            fullscreen = true,
+            ontop = true,
+            skip_taskbar = true,
+            focus = awful.client.focus.filter,
+            raise = true,
+            modal = true
+        }
+    },
+    {
         -- Steam floating windows
         rule_any = {
             name = {
@@ -519,7 +538,6 @@ awful.rules.rules = {
                 "Wpa_gui",
                 "veromix",
                 "xtightvncviewer",
-                "awakened-poe-trade"
             },
 
 
