@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.local/share/oh-my-zsh"
+export ZSH="$ZDOTDIR/ohmyzsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -95,6 +95,9 @@ plugins=(
 
   # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
+
+  # https://python-poetry.org/docs/#installing-with-the-official-installer
+  poetry
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -135,3 +138,13 @@ fi
 source "$XDG_CONFIG_HOME"/zsh/aliases
 
 neofetch
+
+# eval "$(pyenv init -)"
+# eval "$(pyenv virtualenv-init -)"
+
+# source /usr/bin/virtualenvwrapper.sh
+# workon venv
+
+eval $(thefuck --alias)
+
+export PIP_REQUIRE_VIRTUALENV=true

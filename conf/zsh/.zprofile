@@ -4,18 +4,35 @@ setxkbmap us -variant intl
 # # PT-BR ABNT2
 # setxkbmap -model pc105 -layout br -variant abnt2
 
-nitrogen --restore
+# nitrogen --restore
 
 # pcmanfm --daemon-mode
 
-nm-applet &
+# nm-applet &
 
-birdtray &
+# birdtray &
 
-caffeine start &
+# caffeine start &
 
-/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+# /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-picom &
+# picom &
 
-blueman-applet &
+# blueman-applet &
+
+# pasystray --key-grabbing --notify=all --symbolic-icons &
+
+# # Disable the screensaver
+# xset s off
+# xset -dpms
+# xset s noblank
+
+# # Disable the screen lock
+# xautolock -disable
+
+# # Disable the screen blanking
+# xset s off
+# xset -dpck
+# xset s noblank
+
+# https://bbs.archlinux.org/viewtopic.php?id=251330

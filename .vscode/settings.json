@@ -1,7 +1,7 @@
 {
     "Lua.workspace.library": [
         "${workspaceFolder}",
-        "/usr/share/awesome/lib",
+        "/usr/share/awesome/lib"
     ],
     "Lua.diagnostics.globals": [
         "awesome",
@@ -18,5 +18,9 @@
         "**/Thumbs.db": true,
         "**/Code - Insiders": true,
         "**/Code": true,
-    }
+    },
+    "editor.rulers": [
+        80,
+        120
+    ],
 }
