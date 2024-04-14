@@ -28,9 +28,6 @@ export HISTFILE="$XDG_STATE_HOME"/zsh/history
 export GTK_THEME=Adwaita:dark
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
 
-# NPM
-export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME"/npm/npmrc
-
 # NVM
 export NVM_DIR="$XDG_DATA_HOME"/nvm
 
@@ -56,6 +53,7 @@ export PYTHONUSERBASE=$XDG_DATA_HOME/python
 export POETRY_HOME=$XDG_DATA_HOME/pypoetry
 export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
 export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonrc"
+export PIP_REQUIRE_VIRTUALENV=true
 pathappend $POETRY_HOME/bin
 
 # Azure
@@ -82,13 +80,20 @@ pathappend "/var/lib/flatpak/exports/bin"
 pathappend "/var/lib/snapd/snap/bin"
 pathappend "/home/wellington/.local/bin"
 
+# Node
+export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+
+# npm
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME"/npm/npmrc
+pathappend "$XDG_DATA_HOME/npm/bin"
+
 # pnpm
 export PNPM_HOME="$XDG_DATA_HOME"/pnm
 export PATH="$PNPM_HOME:$PATH"
 
 # General
 export TERM=alacritty
-export BROWSER=firefox
+export BROWSER=one.ablaze.floorp
 export MAIL=thunderbird
 export EDITOR=nvim
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv
@@ -99,8 +104,19 @@ export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
 # https://bbs.archlinux.org/viewtopic.php?id=251330
 export ASPNETCORE_Kestrel__Certificates__Default__Password="" # No password
 export ASPNETCORE_Kestrel__Certificates__Default__Path="${XDG_DATA_HOME}/.aspnet/https/aspnetapp.pfx"
-
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export DOTNET_CLI_HOME="$XDG_DATA_HOME"/dotnet
+export OMNISHARPHOME="$XDG_CONFIG_HOME/omnisharp"
+pathappend "$DOTNET_CLI_HOME/.dotnet/tools"
 
 # Steam
 export STEAM_FORCE_DESKTOPUI_SCALING=1
+
+# Docker
+export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
+
+# cargo
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
+
+# go
+export GOPATH="$XDG_DATA_HOME"/go

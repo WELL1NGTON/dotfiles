@@ -1,1 +1,5 @@
 alias wget='wget --hsts-file="$XDG_DATA_HOME"/wget-hsts'
+alias docker-ports='docker ps --format "table {{.Names}}\t{{.Ports}}"'
+alias floorp=one.ablaze.floorp
+alias steam=com.valvesoftware.Steam
+alias adb='HOME="$XDG_DATA_HOME"/android adb'

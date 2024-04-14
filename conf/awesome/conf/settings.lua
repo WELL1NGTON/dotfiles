@@ -1,24 +1,23 @@
----@class Settings
-local settings =
-{
-    ---@type string
-    terminal = os.getenv("TERM") or "alacritty",
-    ---@type string
-    editor = os.getenv("EDITOR") or "nvim",
-    ---@type string
-    filebrowser = os.getenv("FILEBROWSER") or "pcmanfm",
-    ---@type string
-    browser = os.getenv("BROWSER") or "firefox",
-    ---@type string
-    mail = os.getenv("MAIL") or "thunderbird",
-    ---@type string
-    modkey = "Mod4",
-    ---@type string
-    altmod = "Mod1",
-    ---@type string
-    editor_cmd = "",
+---@class (exact) Settings
+---@field terminal string
+---@field editor string
+---@field filebrowser string
+---@field browser string
+---@field mail string
+---@field modkey string
+---@field altmod string
+---@field editor_cmd string
+local settings = {
+	terminal = os.getenv("TERM") or "alacritty",
+	editor = os.getenv("EDITOR") or "nvim",
+	filebrowser = os.getenv("FILEBROWSER") or "pcmanfm",
+	browser = os.getenv("BROWSER") or "firefox",
+	mail = os.getenv("MAIL") or "thunderbird",
+	modkey = "Mod4",
+	altmod = "Mod1",
+	editor_cmd = "",
 }
 
-settings.editor_cmd = settings.terminal .. " -e " .. settings.editor;
+settings.editor_cmd = settings.terminal .. " -e " .. settings.editor
 
 return settings
