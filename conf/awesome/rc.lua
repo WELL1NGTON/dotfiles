@@ -72,7 +72,7 @@ beautiful.init(theme_path)
 -- This is used later as the default terminal and editor to run.
 local terminal = os.getenv 'TERM' or 'xterm'
 local editor = os.getenv 'EDITOR' or 'nano'
--- local editor_cmd = terminal .. ' -e ' .. editor
+local editor_cmd = terminal .. ' -e ' .. editor
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -84,21 +84,9 @@ local modkey = 'Mod4'
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
     awful.layout.suit.tile,
-    -- awful.layout.suit.floating,
-    -- awful.layout.suit.tile.left,
-    -- awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
-    -- awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
+    awful.layout.suit.tile.bottom,
+    awful.layout.suit.magnifier,
+    awful.layout.suit.floating,
 }
 -- }}}
 
@@ -138,12 +126,6 @@ local taglist_buttons = gears.table.join(
         if client.focus then
             client.focus:toggle_tag(t)
         end
-    end),
-    awful.button({}, 4, function(t)
-        awful.tag.viewnext(t.screen)
-    end),
-    awful.button({}, 5, function(t)
-        awful.tag.viewprev(t.screen)
     end)
 )
 
@@ -157,12 +139,6 @@ local tasklist_buttons = gears.table.join(
     end),
     awful.button({}, 3, function()
         awful.menu.client_list { theme = { width = 250 } }
-    end),
-    awful.button({}, 4, function()
-        awful.client.focus.byidx(1)
-    end),
-    awful.button({}, 5, function()
-        awful.client.focus.byidx(-1)
     end)
 )
 
@@ -198,12 +174,6 @@ awful.screen.connect_for_each_screen(function(s)
             awful.layout.inc(1)
         end),
         awful.button({}, 3, function()
-            awful.layout.inc(-1)
-        end),
-        awful.button({}, 4, function()
-            awful.layout.inc(1)
-        end),
-        awful.button({}, 5, function()
             awful.layout.inc(-1)
         end)
     ))
@@ -248,13 +218,9 @@ end)
 -- }}}
 
 -- {{{ Mouse bindings
-root.buttons(gears.table.join(
-    awful.button({}, 3, function()
-        mymainmenu:toggle()
-    end),
-    awful.button({}, 4, awful.tag.viewnext),
-    awful.button({}, 5, awful.tag.viewprev)
-))
+root.buttons(gears.table.join(awful.button({}, 3, function()
+    mymainmenu:toggle()
+end)))
 -- }}}
 
 local is_titlebars_visible = false
@@ -576,17 +542,6 @@ awful.rules.rules = {
             },
         },
     },
-    -- {
-    --     -- Visual Studio Code
-    --     rule_any = {
-    --         class = {
-    --             "code",
-    --             "Code",
-    --             "code-insiders",
-    --             "Code-insiders"
-    --         },
-    --     }
-    -- },
 
     -- Floating clients.
     {
@@ -613,6 +568,7 @@ awful.rules.rules = {
             -- and the name shown there might not match defined rules here.
             name = {
                 'Event Tester', -- xev.
+                '.*is sharing your screen.',
             },
             role = {
                 'AlarmWindow', -- Thunderbird's calendar.
@@ -630,7 +586,15 @@ awful.rules.rules = {
 
     -- Add titlebars to normal clients and dialogs
     {
-        rule_any = { type = { 'normal', 'dialog' } },
+        rule_any = {
+            type = {
+                'normal',
+                'dialog',
+            },
+            name = {
+                '.*is sharing your screen.',
+            },
+        },
         properties = { titlebars_enabled = true },
     },
 
