@@ -239,30 +239,25 @@ end
 
 -- {{{ Key bindings
 local globalkeys = gears.table.join(
-    --awful.key(
-    --    { modkey, 'Shift' },
-    --    's',
-    --    -- Just a test to check if the zsh environment is working
-    --    function()
-    --        awful.spawn.with_shell("notify-send 'Test' '$EDITOR = " .. editor .. "'")
-    --        -- gears.filesystem.get_xdg_config_home()
-    --        awful.spawn.with_shell(
-    --            "notify-send 'Test' '$XDG_CONFIG_HOME = " .. gears.filesystem.get_xdg_config_home() .. "'"
-    --        )
-    --        -- theme_path
-    --        awful.spawn.with_shell("notify-send 'Test' '$theme_path = " .. theme_path .. "'")
-    --    end,
-    --    { description = 'test', group = 'awesome' }
-    --),
-
-    awful.key({ modkey, 'Shift' }, 's', function()
+    awful.key({ modkey, 'Shift' }, 't', function()
         is_titlebars_visible = not is_titlebars_visible
         update_titlebars_visible()
-    end, { description = 'temporary tests enable/disable titlebars', group = 'awesome' }),
+    end, {
+        description = 'temporary tests enable/disable titlebars',
+        group = 'awesome',
+    }),
+    awful.key({ modkey, 'Shift' }, 's', function()
+        awful.spawn { 'flameshot', 'gui' }
+    end, { description = 'take a screenshot with flameshot', group = 'awesome' }),
+    awful.key({ modkey, 'Control' }, 's', function()
+        awful.spawn { 'flameshot-ocr' }
+    end, { description = 'screenshot ocr to clip', group = 'awesome' }),
+    awful.key({ modkey }, 'Escape', function()
+        awful.spawn { 'dm-tool', 'lock' }
+    end, { description = 'lock the screen with lighdm', group = 'awesome' }),
     awful.key({ modkey }, 's', hotkeys_popup.show_help, { description = 'show help', group = 'awesome' }),
     awful.key({ modkey }, 'Left', awful.tag.viewprev, { description = 'view previous', group = 'tag' }),
     awful.key({ modkey }, 'Right', awful.tag.viewnext, { description = 'view next', group = 'tag' }),
-    awful.key({ modkey }, 'Escape', awful.tag.history.restore, { description = 'go back', group = 'tag' }),
     awful.key({ modkey }, 'j', function()
         awful.client.focus.byidx(1)
     end, { description = 'focus next by index', group = 'client' }),
