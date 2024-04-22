@@ -457,7 +457,7 @@ awful.rules.rules = {
     {
         rule = {},
         properties = {
-            border_width = beautiful.border_width,
+            border_width = 2,
             border_color = beautiful.border_normal,
             focus = awful.client.focus.filter,
             raise = true,
@@ -692,7 +692,7 @@ local autorun_apps = {
     -- nm-applet: applet for network manager
     'nm-applet',
     -- nitrogen: wallpaper manager
-    { 'nitrogen', '--restore' },
+    -- { 'nitrogen', '--restore' },
     -- required for polkit authentication (not in path by default)
     '/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1',
     --
