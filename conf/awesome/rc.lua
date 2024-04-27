@@ -68,6 +68,8 @@ if not gears.filesystem.file_readable(theme_path) then
 end
 
 beautiful.init(theme_path)
+beautiful.notification_icon_size = 100
+-- beautiful.notification_max_width = 200
 
 -- This is used later as the default terminal and editor to run.
 local terminal = os.getenv 'TERM' or 'xterm'
@@ -457,7 +459,7 @@ awful.rules.rules = {
     {
         rule = {},
         properties = {
-            border_width = 2,
+            border_width = 5,
             border_color = beautiful.border_normal,
             focus = awful.client.focus.filter,
             raise = true,
@@ -771,7 +773,7 @@ update_titlebars_visible()
 local tags = root.tags()
 for _, t in ipairs(tags) do
     t.gap_single_client = true
-    t.useless_gap = 5
+    t.useless_gap = 8
     t.master_width_factor = 0.65
     t.column_count = 1
 end

@@ -48,4 +48,5 @@ fastfetch
 
 eval $(thefuck --alias)
 
-export PIP_REQUIRE_VIRTUALENV=true
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"

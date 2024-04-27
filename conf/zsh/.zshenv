@@ -55,6 +55,7 @@ export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
 export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonrc"
 export PIP_REQUIRE_VIRTUALENV=true
 pathappend $POETRY_HOME/bin
+export PYENV_ROOT="$XDG_DATA_HOME"/pyenv
 
 # Azure
 export AZURE_CONFIG_DIR=$XDG_DATA_HOME/azure
