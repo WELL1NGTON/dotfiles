@@ -13,7 +13,7 @@ XDG_CACHE_HOME  DEFAULT=@{HOME}/.cache
 
 ## ZSH config
 
-Configs required in `/etc/zshenv`:
+Configs required in `/etc/zsh/zshenv`:
 
 ```sh
 export ZDOTDIR="$HOME"/.config/zsh
@@ -28,7 +28,7 @@ touch "$XDG_STATE_HOME/zsh/history"
 ```
 
 Install [oh-my-zsh](https://ohmyz.sh/), the theme
-[spaceship-zsh-theme](https://github.com/pascaldevink/spaceship-zsh-theme) and
+[spaceship-zsh-theme](https://github.com/spaceship-prompt/spaceship-prompt) and
 the plugin
 [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting).
 
