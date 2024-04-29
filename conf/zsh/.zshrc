@@ -15,7 +15,7 @@ plugins=(
   pip
   docker
   docker-compose
-  tmux
+  # tmux
   #  firewalld
   #  frontend-search
   #  web-search

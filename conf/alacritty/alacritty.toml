@@ -266,7 +266,7 @@ mode = "Vi|~Search"
 mods = "Shift"
 
 [window]
-opacity = 0.90
+opacity = 0.85
 dynamic_padding = true
 resize_increments = false
 
