@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+# TODO: parameters --stop-on-exit, --install-tmux
+# TODO: validate instaled (devcontainer, jq)
+
+devcontainer read-configuration --workspace-folder . &> /dev/null || (echo "decontainer config not found" && exit 1)
+
+echo "Starting container"
+devcontainer_result=$(devcontainer up --workspace-folder . 2> /dev/null || (echo "failed to start container" && exit 1))
+devcontainer_id=$(echo $devcontainer_result | jq -r .containerId)
+
+echo "Getting container's default user and shell"
+container_user=$(devcontainer exec --workspace-folder . /bin/sh -c 'echo $USER')
+container_shell=$(devcontainer exec --workspace-folder . /bin/sh -c 'awk -F: '"'"'/'"${container_user}"'/ { print $7}'"'"' /etc/passwd')
+
+echo "Checking if neovim is installed"
+# is_tmux_installed=$(devcontainer exec --workspace-folder . /bin/sh -c 'command -v tmux >/dev/null 2>&1 && echo "true" || echo "false"')
+is_nvim_installed=$(devcontainer exec --workspace-folder . /bin/sh -c 'command -v nvim >/dev/null 2>&1 && echo "true" || echo "false"')
+
+if ! $is_nvim_installed; then
+    # TODO: detect default package manager and use the correct one
+    echo "Installing required packages"
+    devcontainer exec --workspace-folder . /bin/sh << 'EOF'
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update
+        yes | sudo apt-get install tmux lua5.3 git
+EOF
+    echo "Installing updated neovim (manual installation)"
+    devcontainer exec --workspace-folder . /bin/sh << 'EOF'
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+        TEMPNVIM=$(mktemp -d)
+        curl -Lo $TEMPNVIM/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/v0.9.5/nvim-linux64.tar.gz
+        tar xf $TEMPNVIM/nvim-linux64.tar.gz --directory=$TEMPNVIM
+        sudo cp -r $TEMPNVIM/nvim-linux64/bin /usr
+        sudo cp -r $TEMPNVIM/nvim-linux64/lib /usr
+        sudo cp -r $TEMPNVIM/nvim-linux64/share /usr
+        sudo cp -r $TEMPNVIM/nvim-linux64/man /usr/share
+        rm -rf $TEMPNVIM
+EOF
+    echo "Adding neovim config"
+    devcontainer exec --workspace-folder . /bin/sh << 'EOF'
+        set -e
+        export DEBIAN_FRONTEND=noninteractive
+        mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+        git clone https://github.com/WELL1NGTON/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+EOF
+fi
+
+echo "Executing $container_shell as $container_user"
+devcontainer exec --workspace-folder . $container_shell || echo "Exited container"
+
+if ${DEVC_STOP_ON_EXIT:-false}; then
+    echo "Stopping container $devcontainer_id"
+    docker stop $devcontainer_id &> /dev/null
+fi
+
