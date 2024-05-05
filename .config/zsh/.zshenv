@@ -24,6 +24,7 @@ pathprepend() {
 export ANDROID_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/android"
 
 # ZSH
+export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
 export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 
 # GTK

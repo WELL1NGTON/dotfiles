@@ -1,5 +1,3 @@
-export ZSH="$XDG_DATA_HOME/oh-my-zsh"
-
 ZSH_THEME="spaceship"
 
 VSCODE=code-insiders
@@ -24,19 +22,15 @@ plugins=(
   poetry
 )
 
-source $ZSH/oh-my-zsh.sh
-
-if [ -d '/usr/share/nvm' ]; then
-  source /usr/share/nvm/init-nvm.sh
-fi
-
-source "$XDG_CONFIG_HOME"/zsh/aliases
-
-fastfetch
+source ${ZSH:-$HOME/.local/share/oh-my-zsh}/oh-my-zsh.sh
 
 eval $(thefuck --alias)
 
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(zoxide init zsh)"
+
+source ${ZDOTDIR:-"$XDG_CONFIG_HOME"/zsh}/aliases.zsh
+
+fastfetch
 
