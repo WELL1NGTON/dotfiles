@@ -1,5 +1,9 @@
 # My Dotfiles
 
+## Requirements
+
+- awesomewm (git-master)
+
 ## Setup
 
 Configs required in `/etc/security/pam_env.conf`:
