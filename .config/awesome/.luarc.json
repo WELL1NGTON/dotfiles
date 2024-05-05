@@ -14,7 +14,8 @@
             "awesome",
             "client",
             "screen",
-            "root"
+            "root",
+            "tag"
         ]
     }
 }
