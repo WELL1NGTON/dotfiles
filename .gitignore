@@ -1,0 +1,35 @@
+.config/*
+
+# zsh terminal
+!.config/zsh
+!.config/zsh/**/*
+
+# window manager
+!.config/awesome
+!.config/awesome/**/*
+
+# terminal emulator
+!.config/alacritty
+!.config/alacritty/**/*
+
+# compositor (transparency, blur, shadows, etc)
+!.config/picom
+!.config/picom/**/*
+
+# system info fetcher when u open terminal
+!.config/fastfetch
+!.config/fastfetch/**/*
+
+# theme for gnome
+!.config/gtk-3.0
+!.config/gtk-3.0/**/*
+
+# neovim settings
+!.config/nvim
+!.config/nvim/**/*
+
+# my scripts
+.local/bin/*
+!.local/bin/devc-start
+!.local/bin/flameshot-ocr
+

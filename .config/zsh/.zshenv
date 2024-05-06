@@ -20,11 +20,17 @@ pathprepend() {
     done
 }
 
+# Awesome
+export AWESOME_THEMES_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/awesome/themes"
+
 # Android
 export ANDROID_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/android"
 
 # ZSH
 export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
+export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
+export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump"
+export COMPLETION_WAITING_DOTS=true
 export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 
 # GTK

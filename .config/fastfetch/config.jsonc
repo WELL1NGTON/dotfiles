@@ -4,39 +4,29 @@
     "title",
     "separator",
     "os",
-    // "host",
     "kernel",
-    // "uptime",
     "packages",
     "shell",
-    // "display",
     "de",
     "wm",
-    // "wmtheme",
-    // "theme",
-    // "icons",
-    // "font",
-    // "cursor",
+    "theme",
     "terminal",
-    // "terminalfont",
     "cpu",
     "gpu",
     "memory",
-    // "swap",
-    // "disk",
-    // "localip",
-    // "battery",
-    // "poweradapter",
-    // "locale",
     "break",
     "colors"
   ],
   "logo": {
-    "type": "small",
+    "type": "kitty-direct",
+    "source": "/home/wellington/Pictures/Arch-linux-logo-3338145721.png",
+    "width": 20,
+    "height": 10,
     "padding": {
       "left": 2,
       "right": 2,
-      "top": 3
+      //"top": 3
+      "top": 2
     }
   }
 }

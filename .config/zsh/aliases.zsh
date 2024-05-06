@@ -4,6 +4,7 @@ alias floorp=one.ablaze.floorp
 alias steam=com.valvesoftware.Steam
 alias adb='HOME="$XDG_DATA_HOME"/android adb'
 alias nvidia-settings="nvidia-settings --config="$XDG_CONFIG_HOME"/nvidia/settings"
+alias vim=nvim
 alias yarn="corepack yarn"
 alias yarnpkg="corepack yarnpkg"
 alias pnpm="corepack pnpm"

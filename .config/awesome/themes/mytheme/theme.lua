@@ -13,10 +13,10 @@ local global_themes_path = "/usr/share/awesome/themes/"
 
 local theme = {}
 
-theme.font = "sans 8"
+theme.font = "Fira Sans 10"
 
 theme.bg_normal = "#222222"
-theme.bg_focus = "#535d6c"
+theme.bg_focus = "#737dbc"
 theme.bg_urgent = "#ff0000"
 theme.bg_minimize = "#444444"
 theme.bg_systray = theme.bg_normal
@@ -26,10 +26,10 @@ theme.fg_focus = "#ffffff"
 theme.fg_urgent = "#ffffff"
 theme.fg_minimize = "#ffffff"
 
-theme.useless_gap = dpi(8)
-theme.border_width = dpi(2)
+theme.useless_gap = dpi(10)
+theme.border_width = dpi(4)
 theme.border_color_normal = "#000000"
-theme.border_color_active = "#737dac"
+theme.border_color_active = "#737dbc"
 theme.border_color_marked = "#91231c"
 
 -- There are other variable sets
@@ -59,7 +59,7 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
 theme.menu_submenu_icon = global_themes_path .. "default/submenu.png"
-theme.menu_height = dpi(15)
+theme.menu_height = dpi(20)
 theme.menu_width = dpi(100)
 
 -- You can add as many variables as
