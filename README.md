@@ -42,3 +42,4 @@ correctly.
 ## Vim config
 
 My neovim config is in the repo <https://github.com/WELL1NGTON/kickstart.nvim>
+
