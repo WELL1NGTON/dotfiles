@@ -32,4 +32,5 @@
 .local/bin/*
 !.local/bin/devc-start
 !.local/bin/flameshot-ocr
+!.local/bin/mdpreview
 

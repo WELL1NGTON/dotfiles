@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+BROWSER_OPEN_COMMAND='gio open'
+WATCH=false
+
+function validate_requirements {
+    if ! command -v pandoc &> /dev/null
+    then
+        echo "pandoc could not be found"
+        echo "suggestion: 'pacman -S haskell-pandoc'"
+        exit 1
+    fi
+    if [ "$BROWSER_OPEN_COMMAND" == 'gio open' ] && ! [ $(command -v gio) ];
+    then
+        echo "gio could not be found"
+        echo "suggestion: 'pacman -S glib2'"
+        exit 1
+    fi
+    if [ $WATCH == true ] && ! [ $(command -v inotifywait) ]; then
+        echo "inotifywait could not be found"
+        echo "suggestion: 'pacman -S 'inotify-tools'"
+        exit 1
+    fi
+}
+
+function pandoc_md_to_html {
+    local input=$1
+    local output=$2
+    local css=${3:-"https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-dark.css"}
+    pandoc --standalone \
+           --css="$css" \
+           --from gfm+smart \
+           --to=html5 \
+           --metadata pagetitle="$(basename $0) ${input}" \
+           "$input" \
+           -o "$output" &> /dev/null
+}
+
+function generate_html {
+    local markdown_file=$1
+    local temp_dir="$(mktemp -d)"
+    local html_file="${temp_dir}/index.html"
+    echo $html_file
+    pandoc_md_to_html $markdown_file $html_file
+    if [ $? -eq 0 ]; then
+        nohup $BROWSER_OPEN_COMMAND $html_file &> /dev/null &
+    else
+        echo "failed to create html for file ${markdown_file}"
+    fi
+    if [ $WATCH == true ]; then
+        while ! inotifywait -e modify "$markdown_file"; do
+            echo "$markdown_file was modified!"
+            # TODO: find a way for the browser keep updating the preview
+            pandoc_md_to_html $markdown_file $html_file
+        done
+    fi
+}
+
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -b|--browser)
+            BROWSER_OPEN_COMMAND="$2"
+            shift
+            shift
+            ;;
+        -b=*|--browser=*)
+            BROWSER_OPEN_COMMAND="${1#*=}"
+            shift
+            ;;
+        -w|--watch)
+            WATCH=true
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $(basename $0) [options...] <markdown file>"
+            echo " -b, --browser <cmd>  command for opening the final html. (default: gio open)"
+            echo " -w, --watch          watch for file changes"
+            exit 0
+            ;;
+        -*|--*)
+            echo "Unknown option $1"
+            exit 1
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1") # save positional arg
+            shift # past argument
+            ;;
+    esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+validate_requirements
+
+for file in $1; do
+    generate_html $file
+done
+
