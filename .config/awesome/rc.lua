@@ -613,6 +613,11 @@ ruled.client.connect_signal("request::rules", function()
         rule = { class = "thunderbird" },
         properties = { screen = 1, tag = "8" },
     })
+    -- Set Steam to always map on the tag named "9" on screen 1.
+    ruled.client.append_rule({
+        rule = { class = "steam" },
+        properties = { screen = 1, tag = "9" },
+    })
     -- Set "chat" to always map on the tag named "7" on screen 1.
     ruled.client.append_rule({
         rule_any = {
@@ -801,7 +806,7 @@ update_titlebars_visible()
 -- Set master factor 65%/35%
 local tags = root.tags()
 for _, t in ipairs(tags) do
-    t.master_width_factor = 0.65
+    t.master_width_factor = 0.60
 end
 
 -- vim:fileencoding=utf-8:foldmethod=marker
