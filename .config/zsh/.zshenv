@@ -30,7 +30,6 @@ export ANDROID_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/android"
 export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
 export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump"
-export COMPLETION_WAITING_DOTS=true
 export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 
 # GTK
@@ -48,9 +47,6 @@ export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
 
 # AZURE
 export AZURE_CONFIG_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/azure"
-
-# NUGET
-export NUGET_PACKAGES="${XDG_CACHE_HOME:-$HOME/.cache}/NuGetPackages"
 
 # gnupg
 export GNUPGHOME="${XDG_DATA_HOME:-$HOME/.local/share}/gnupg"
@@ -117,6 +113,7 @@ export ASPNETCORE_Kestrel__Certificates__Default__Password="" # No password
 export ASPNETCORE_Kestrel__Certificates__Default__Path="${XDG_DATA_HOME}/.aspnet/https/aspnetapp.pfx"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export DOTNET_CLI_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/dotnet"
+export NUGET_PACKAGES="${XDG_CACHE_HOME:-$HOME/.cache}/NuGetPackages"
 export OMNISHARPHOME="${XDG_CONFIG_HOME:-$HOME/.config}/omnisharp"
 pathappend "$DOTNET_CLI_HOME/.dotnet/tools"
 

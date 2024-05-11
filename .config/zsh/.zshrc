@@ -1,19 +1,12 @@
 ZSH_THEME="spaceship"
 
-VSCODE=code-insiders
-
 plugins=(
   git
-  dotnet
+  # dotnet
   pip
   docker
   docker-compose
   #  firewalld
-  #  frontend-search
-  #  web-search
-  #  thefuck
-
-  vscode
 
   # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
