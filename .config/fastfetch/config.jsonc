@@ -18,15 +18,15 @@
     "colors"
   ],
   "logo": {
-    "type": "kitty-direct",
-    "source": "/home/wellington/Pictures/Arch-linux-logo-3338145721.png",
+    "type": "small",
+    //"type": "kitty-direct",
+    // "source": "/home/wellington/Pictures/Arch-linux-logo-3338145721.png",
     "width": 20,
     "height": 10,
     "padding": {
       "left": 2,
       "right": 2,
-      //"top": 3
-      "top": 2
+      "top": 3
     }
   }
 }

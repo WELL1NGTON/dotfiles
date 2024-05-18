@@ -1,4 +1,16 @@
+export HISTFILESIZE=10000000
+export HISTSIZE=100000
+export SAVEHIST=50000
+export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+
+setopt HIST_FIND_NO_DUPS
+setopt INC_APPEND_HISTORY
+
 ZSH_THEME="spaceship"
+
+if [ ! -d ${ZSH:-$HOME/.local/share/oh-my-zsh} ]; then
+  ZSH=${ZSH:-$HOME/.local/share/oh-my-zsh} sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
 
 plugins=(
   git

@@ -129,6 +129,8 @@ screen.connect_signal("request::wallpaper", function(s)
         widget = {
             {
                 image = beautiful.wallpaper,
+                horizontal_fit_policy = "fit",
+                vertical_fit_policy   = "fit",
                 upscale = true,
                 downscale = true,
                 widget = wibox.widget.imagebox,
@@ -136,7 +138,7 @@ screen.connect_signal("request::wallpaper", function(s)
             valign = "center",
             halign = "center",
             tiled = false,
-            widget = wibox.container.tile,
+            widget = wibox.container.background,
         },
     })
 end)
