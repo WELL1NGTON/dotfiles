@@ -22,6 +22,9 @@ local ruled = require("ruled")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -35,6 +38,48 @@ end)
 -- }}}
 
 -- {{{ Variable definitions
+
+-- TODO: Find a better place for helper methods like fix_startup_id
+
+local blacklisted_snid = setmetatable({}, { __mode = "v" })
+
+--- Make startup notification work for some clients like XTerm. This is ugly
+-- but works often enough to be useful.
+local function fix_startup_id(c)
+    -- Prevent "broken" sub processes created by <code>c</code> to inherit its SNID
+    if c.startup_id then
+        blacklisted_snid[c.startup_id] = blacklisted_snid[c.startup_id] or c
+        return
+    end
+
+    if not c.pid then
+        return
+    end
+
+    -- Read the process environment variables
+    local f = io.open("/proc/" .. c.pid .. "/environ", "rb")
+
+    -- It will only work on Linux, that's already 99% of the userbase.
+    if not f then
+        return
+    end
+
+    local value = _VERSION <= "Lua 5.1" and "([^\z]*)\0" or "([^\0]*)\0"
+    local snid = f:read("*all"):match("STARTUP_ID=" .. value)
+    f:close()
+
+    -- If there is already a client using this SNID, it means it's either a
+    -- subprocess or another window for the same process. While it makes sense
+    -- in some case to apply the same rules, it is not always the case, so
+    -- better doing nothing rather than something stupid.
+    if blacklisted_snid[snid] then
+        return
+    end
+
+    c.startup_id = snid
+
+    blacklisted_snid[snid] = c
+end
 
 -- custom/temporary debug variable
 local is_debug_enabled = false
@@ -130,7 +175,7 @@ screen.connect_signal("request::wallpaper", function(s)
             {
                 image = beautiful.wallpaper,
                 horizontal_fit_policy = "fit",
-                vertical_fit_policy   = "fit",
+                vertical_fit_policy = "fit",
                 upscale = true,
                 downscale = true,
                 widget = wibox.widget.imagebox,
@@ -230,7 +275,22 @@ screen.connect_signal("request::desktop_decoration", function(s)
     -- Create the wibox
     s.mywibox = awful.wibar({
         position = "top",
+        margins = {
+            left = dpi(8),
+            top = dpi(5),
+            right = dpi(8),
+            bottom = dpi(0),
+        },
+        border_width = dpi(2),
+        -- TODO: need to be ontop because of animated wallpaper (mpv), but this is not optimal because fullscreen
+        -- applications will be behind the wibox. Need to find a fix for this so that ontop isn't needed anymore
+        ontop = true,
+        border_color = "#232d5c",
+        shape = function(cr, width, height)
+            return gears.shape.rounded_rect(cr, width, height, 5)
+        end,
         screen = s,
+        type = "dock",
         widget = {
             layout = wibox.layout.align.horizontal,
             { -- Left widgets
@@ -249,6 +309,76 @@ screen.connect_signal("request::desktop_decoration", function(s)
             },
         },
     })
+
+    -- INFO: Animated wallpaper: wanted to put this on the "request::wallpaper" signal, but it don't works in there...
+    ruled.client.add_rule_source("awesomewm_wallpaper_mpv", fix_startup_id, {}, { "awful.spawn", "ruled.client" })
+    awful.spawn.single_instance(
+        {
+            "mpv",
+            -- "--x11-bypass-compositor=yes",
+            "--no-input-default-bindings",
+            "--no-config",
+            "--panscan=1.0",
+            -- "--fullscreen",
+            "--scale=nearest",
+            "--no-border",
+            "--osc=no",
+            "--keepaspect",
+            "--stop-screensaver=no",
+            "--loop-file=yes",
+            "--no-audio",
+            "--osd-level=0",
+            "--ontop=no",
+            "--ontop-level=0",
+            -- "--on-all-workspaces",
+            "--x11-name=awesomewm_wallpaper_mpv",
+            "--x11-wid-title=yes",
+            -- "--wid=-1",
+            "--window-draggin=no",
+            "/home/wellington/Pictures/wallpapers/hyper_light_drifter_fanart--jouney_951--rpixelart.mp4",
+        },
+        {
+            floating = true,
+            border_width = 0,
+            ontop = false,
+            above = false,
+            below = true,
+            skip_taskbar = true,
+            size_hints_honor = false,
+            requests_no_titlebar = true,
+            honor_padding = false,
+            honor_workarea = false,
+            x = 0,
+            y = 0,
+            width = 2560,
+            height = 1440,
+            focus = false,
+            focusable = false,
+            sticky = true,
+            startup_id = "awesomewm_wallpaper_mpv",
+            first_tag = "awesomewm_wallpaper_mpv",
+            titlebars_enabled = false,
+            dockable = false,
+            class = "awesomewm_wallpaper_mpv",
+            instance = "awesomewm_wallpaper_mpv",
+            screen = s,
+            type = "desktop",
+            tag = "9",
+        },
+        function(c)
+            return c.class == "mpv"
+        end,
+        "awesomewm_wallpaper_mpv",
+        function(c)
+            -- s.mywibox.ontop = false
+            c:lower()
+            -- c:emit_signal("lowered")
+            awful.spawn.with_shell("notify-send 'awesomewm_wallpaper_mpv'")
+            awful.spawn.with_shell("notify-send '" .. tostring(c.valid) .. "'")
+            awful.spawn.with_shell("notify-send '" .. tostring(c.name) .. "'")
+            awful.spawn.with_shell("notify-send '" .. tostring(c.instance) .. "'")
+        end
+    )
 end)
 
 -- }}}
@@ -290,6 +420,10 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "p", function()
         menubar.show()
     end, { description = "show the menubar", group = "launcher" }),
+    awful.key({ modkey }, "b", function()
+        local myscreen = awful.screen.focused()
+        myscreen.mywibox.visible = not myscreen.mywibox.visible
+    end, { description = "toggle statusbar" }),
 
     -- my custom keybindings
     awful.key({ modkey, "Shift" }, "t", function()
