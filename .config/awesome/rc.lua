@@ -72,7 +72,7 @@ local function fix_startup_id(c)
     -- subprocess or another window for the same process. While it makes sense
     -- in some case to apply the same rules, it is not always the case, so
     -- better doing nothing rather than something stupid.
-    if blacklisted_snid[snid] then
+    if not snid or blacklisted_snid[snid] then
         return
     end
 
