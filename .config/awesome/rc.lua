@@ -439,6 +439,9 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "Escape", function()
         awful.spawn({ "dm-tool", "lock" })
     end, { description = "lock the screen with lighdm", group = "awesome" }),
+    awful.key({ modkey }, ".", function()
+        awful.spawn({ "flatpak", "run", "it.mijorus.smile" })
+    end, { description = "emojis", group = "awesome" }),
 })
 
 -- Tags related keybindings
@@ -727,15 +730,32 @@ ruled.client.connect_signal("request::rules", function()
                 "TorGuard",
                 "Peek",
                 "peek",
+                "smile",
             },
         },
         properties = {
             floating = true,
             ontop = true,
             skip_taskbar = true,
+            sticky = true,
         },
     })
 
+    ruled.client.append_rule({
+        id = "inside-client",
+        rule_any = {
+            class = {
+                "smile",
+            },
+        },
+        properties = {
+            floating = true,
+            placement =  awful.placement.under_mouse,
+            -- placement = function(c)
+            --
+            -- end
+        },
+    })
     -- Set Floorp to always map on the tag named "2" on screen 1.
     ruled.client.append_rule({
         rule = { class = "floorp" },
@@ -866,6 +886,7 @@ local autorun_apps = {
     --
     { "xbindkeys", "-f", "${XDG_CONFIG_HOME}/xbindkeys/config" },
     { "playerctld", "daemon" },
+    {"flatpak", "run", "it.mijorus.smile", "--start-hidden"},
 }
 
 -- List of apps to start once on start-up but startup notification protocol is
