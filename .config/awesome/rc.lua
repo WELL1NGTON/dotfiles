@@ -311,7 +311,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
     })
 
     -- INFO: Animated wallpaper: wanted to put this on the "request::wallpaper" signal, but it don't works in there...
-    ruled.client.add_rule_source("awesomewm_wallpaper_mpv", fix_startup_id, {}, { "awful.spawn", "ruled.client" })
+    local mpv_name = "awesomewm_wallpaper_mpv" .. tostring(s.index)
+    ruled.client.add_rule_source(mpv_name, fix_startup_id, {}, { "awful.spawn", "ruled.client" })
     awful.spawn.single_instance(
         {
             "mpv",
@@ -331,10 +332,10 @@ screen.connect_signal("request::desktop_decoration", function(s)
             "--ontop=no",
             "--ontop-level=0",
             -- "--on-all-workspaces",
-            "--x11-name=awesomewm_wallpaper_mpv",
+            "--x11-name=" .. mpv_name,
             "--x11-wid-title=yes",
             -- "--wid=-1",
-            "--window-draggin=no",
+            "--window-dragging=no",
             "/home/wellington/Pictures/wallpapers/hyper_light_drifter_fanart--jouney_951--rpixelart.mp4",
         },
         {
@@ -355,28 +356,24 @@ screen.connect_signal("request::desktop_decoration", function(s)
             focus = false,
             focusable = false,
             sticky = true,
-            startup_id = "awesomewm_wallpaper_mpv",
-            first_tag = "awesomewm_wallpaper_mpv",
+            startup_id = mpv_name,
+            first_tag = mpv_name,
             titlebars_enabled = false,
             dockable = false,
-            class = "awesomewm_wallpaper_mpv",
-            instance = "awesomewm_wallpaper_mpv",
+            class = mpv_name,
+            instance = mpv_name,
             screen = s,
             type = "desktop",
             tag = "9",
         },
         function(c)
-            return c.class == "mpv"
+            return c.instance == mpv_name
         end,
-        "awesomewm_wallpaper_mpv",
+        mpv_name,
         function(c)
             -- s.mywibox.ontop = false
             c:lower()
             -- c:emit_signal("lowered")
-            awful.spawn.with_shell("notify-send 'awesomewm_wallpaper_mpv'")
-            awful.spawn.with_shell("notify-send '" .. tostring(c.valid) .. "'")
-            awful.spawn.with_shell("notify-send '" .. tostring(c.name) .. "'")
-            awful.spawn.with_shell("notify-send '" .. tostring(c.instance) .. "'")
         end
     )
 end)
