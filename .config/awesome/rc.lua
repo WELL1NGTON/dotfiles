@@ -131,9 +131,9 @@ local myawesomemenu = {
             hotkeys_popup.show_help(nil, awful.screen.focused())
         end,
     },
-    { "manual", terminal .. " -e man awesome" },
+    { "manual",      terminal .. " -e man awesome" },
     { "edit config", editor_cmd .. " " .. awesome.conffile },
-    { "restart", awesome.restart },
+    { "restart",     awesome.restart },
     {
         "quit",
         function()
@@ -144,7 +144,7 @@ local myawesomemenu = {
 
 local mymainmenu = awful.menu({
     items = {
-        { "awesome", myawesomemenu, beautiful.awesome_icon },
+        { "awesome",       myawesomemenu, beautiful.awesome_icon },
         { "open terminal", terminal },
     },
 })
@@ -279,7 +279,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             left = dpi(8),
             top = dpi(5),
             right = dpi(8),
-            bottom = dpi(0),
+            bottom = dpi(5),
         },
         border_width = dpi(2),
         -- TODO: need to be ontop because of animated wallpaper (mpv), but this is not optimal because fullscreen
@@ -300,7 +300,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
                 s.mypromptbox,
             },
             s.mytasklist, -- Middle widget
-            { -- Right widgets
+            {             -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
                 mykeyboardlayout,
                 wibox.widget.systray(),
@@ -365,6 +365,12 @@ screen.connect_signal("request::desktop_decoration", function(s)
             screen = s,
             type = "desktop",
             tag = "9",
+            is_fixed = true,
+            immobilized_vertical = true,
+            immobilized_horizontal = true,
+            modal = true,
+            role = "wallpaper",
+            fullscreen = true,
         },
         function(c)
             return c.instance == mpv_name
@@ -372,7 +378,9 @@ screen.connect_signal("request::desktop_decoration", function(s)
         mpv_name,
         function(c)
             -- s.mywibox.ontop = false
-            c:lower()
+            --c.above = false
+            c.below = true
+            --c:lower()
             -- c:emit_signal("lowered")
         end
     )
@@ -683,9 +691,9 @@ ruled.client.connect_signal("request::rules", function()
                 ".*is sharing your screen.",
             },
             role = {
-                "AlarmWindow", -- Thunderbird's calendar.
+                "AlarmWindow",   -- Thunderbird's calendar.
                 "ConfigManager", -- Thunderbird's about:config.
-                "pop-up", -- e.g. Google Chrome's (detached) Developer Tools.
+                "pop-up",        -- e.g. Google Chrome's (detached) Developer Tools.
             },
         },
         except_any = {
@@ -750,7 +758,7 @@ ruled.client.connect_signal("request::rules", function()
         },
         properties = {
             floating = true,
-            placement =  awful.placement.under_mouse,
+            placement = awful.placement.under_mouse,
             -- placement = function(c)
             --
             -- end
@@ -808,7 +816,7 @@ client.connect_signal("request::titlebars", function(c)
             buttons = buttons,
             layout = wibox.layout.fixed.horizontal,
         },
-        { -- Middle
+        {     -- Middle
             { -- Title
                 halign = "center",
                 widget = awful.titlebar.widget.titlewidget(c),
@@ -858,6 +866,17 @@ client.connect_signal("button::press", function(c)
     c:activate({ context = "mouse_move", raise = false })
 end)
 
+client.connect_signal("property::fullscreen", function(c)
+    if not client.focus then -- if some window enter in fullscreen without focus, ignore...
+        return
+    end
+    if c.fullscreen then
+        c.screen.mywibox.visible = false
+    else
+        c.screen.mywibox.visible = true
+    end
+end)
+
 -- Apps start with awesome {{{
 
 -- enable autorun apps
@@ -882,11 +901,11 @@ local autorun_apps = {
     --
     { "dbus-update-activation-environment", "--all" },
     --
-    { "gnome-keyring-daemon", "--start", "--components=secrets" },
+    { "gnome-keyring-daemon",               "--start",                                 "--components=secrets" },
     --
-    { "xbindkeys", "-f", "${XDG_CONFIG_HOME}/xbindkeys/config" },
-    { "playerctld", "daemon" },
-    {"flatpak", "run", "it.mijorus.smile", "--start-hidden"},
+    { "xbindkeys",                          "-f",                                      "${XDG_CONFIG_HOME}/xbindkeys/config" },
+    { "playerctld",                         "daemon" },
+    { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
 }
 
 -- List of apps to start once on start-up but startup notification protocol is
@@ -897,7 +916,7 @@ local autorun_apps_no_startup_id = {
     -- pasystray: applet for pulseaudio volume control
     { "pasystray", "--key-grabbing" },
     -- pcmanfm: file manager
-    { "pcmanfm", "--daemon-mode", "--no-desktop" },
+    { "pcmanfm",   "--daemon-mode", "--no-desktop" },
 }
 
 local function get_only_app_name(app)

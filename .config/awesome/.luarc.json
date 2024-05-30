@@ -1,21 +1,22 @@
 {
-    "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-    "workspace": {
-        "library": [
-            "/usr/share/awesome/lib"
-        ]
-    },
-    "runtime": {
-        "version": "Lua 5.4",
-        "fileEncoding": "utf8"
-    },
-    "diagnostics": {
-        "globals": [
-            "awesome",
-            "client",
-            "screen",
-            "root",
-            "tag"
-        ]
-    }
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "workspace": {
+    "library": [
+      "/usr/share/awesome/lib",
+      "/usr/share/awesome/lib/awful",
+      "/usr/share/awesome/lib/gears",
+      "/usr/share/awesome/lib/ruled",
+      "/usr/share/awesome/lib/wibox",
+      "/usr/share/awesome/lib/menubar",
+      "/usr/share/awesome/lib/naughty",
+      "/usr/share/awesome/lib/beautiful"
+    ]
+  },
+  "runtime": {
+    "version": "Lua 5.4",
+    "fileEncoding": "utf8"
+  },
+  "diagnostics": {
+    "globals": ["awesome", "client", "screen", "root", "tag"]
+  }
 }
