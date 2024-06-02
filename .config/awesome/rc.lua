@@ -272,6 +272,22 @@ screen.connect_signal("request::desktop_decoration", function(s)
         },
     })
 
+    s.is_wibar_visible_locked = false
+    s.is_wibar_last_vis_manual = false
+    s.mywibox_lock_state = wibox.widget {
+        text = "",
+        widget = wibox.widget.textbox,
+        get_lock_state_text = function ()
+            if s.is_wibar_visible_locked then
+                return " "
+            end
+            return ""
+        end,
+        update_text = function ()
+            s.mywibox_lock_state.text = s.mywibox_lock_state.get_lock_state_text()
+        end
+    }
+
     -- Create the wibox
     s.mywibox = awful.wibar({
         position = "top",
@@ -305,6 +321,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
                 mykeyboardlayout,
                 wibox.widget.systray(),
                 mytextclock,
+                s.mywibox_lock_state,
                 s.mylayoutbox,
             },
         },
@@ -428,7 +445,13 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "b", function()
         local myscreen = awful.screen.focused()
         myscreen.mywibox.visible = not myscreen.mywibox.visible
-    end, { description = "toggle statusbar" }),
+        myscreen.is_wibar_last_vis_manual = true
+    end, { description = "toggle statusbar", group = "awesome" }),
+    awful.key({ modkey, "Shift" }, "b", function()
+        local myscreen = awful.screen.focused()
+        myscreen.is_wibar_visible_locked = not myscreen.is_wibar_visible_locked
+        myscreen.mywibox_lock_state.update_text()
+    end, { description = "toggle statusbar locked", group = "awesome" }),
 
     -- my custom keybindings
     awful.key({ modkey, "Shift" }, "t", function()
@@ -867,13 +890,31 @@ client.connect_signal("button::press", function(c)
 end)
 
 client.connect_signal("property::fullscreen", function(c)
+    local s = c.screen
+    if s.is_wibar_visible_locked then
+        return
+    end
     if not client.focus then -- if some window enter in fullscreen without focus, ignore...
         return
     end
     if c.fullscreen then
-        c.screen.mywibox.visible = false
+        s.mywibox.visible = false
+        s.is_wibar_last_vis_manual = false
     else
-        c.screen.mywibox.visible = true
+        s.mywibox.visible = true
+        s.is_wibar_last_vis_manual = false
+    end
+end)
+
+client.connect_signal("focus", function(c)
+    local s = c.screen
+    if s.is_wibar_visible_locked or s.is_wibar_last_vis_manual then
+        return
+    end
+    if c.fullscreen then
+        s.mywibox.visible = false
+    else
+        s.mywibox.visible = true
     end
 end)
 
