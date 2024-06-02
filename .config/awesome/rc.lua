@@ -468,7 +468,7 @@ awful.keyboard.append_global_keybindings({
         awful.spawn({ "flameshot-ocr" })
     end, { description = "screenshot ocr to clip", group = "awesome" }),
     awful.key({ modkey }, "Escape", function()
-        awful.spawn({ "dm-tool", "lock" })
+        awful.spawn.easy_async({ "light-locker-command", "-l" })
     end, { description = "lock the screen with lighdm", group = "awesome" }),
     awful.key({ modkey }, ".", function()
         awful.spawn({ "flatpak", "run", "it.mijorus.smile" })
