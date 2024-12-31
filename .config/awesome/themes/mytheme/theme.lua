@@ -13,7 +13,8 @@ local global_themes_path = "/usr/share/awesome/themes/"
 
 local theme = {}
 
-theme.font = "Fira Sans 10"
+-- theme.font = "Fira Sans 10"
+theme.font = "Fira Sans 12"
 
 theme.bg_normal = "#222222"
 theme.bg_focus = "#737dcc"

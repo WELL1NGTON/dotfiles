@@ -159,6 +159,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Table of layouts to cover with awful.layout.inc, order matters.
 tag.connect_signal("request::default_layouts", function()
     awful.layout.append_default_layouts({
+        awful.layout.suit.spiral.dwindle,
         awful.layout.suit.tile,
         awful.layout.suit.tile.bottom,
         awful.layout.suit.magnifier,
@@ -277,13 +278,13 @@ screen.connect_signal("request::desktop_decoration", function(s)
     s.mywibox_lock_state = wibox.widget {
         text = "",
         widget = wibox.widget.textbox,
-        get_lock_state_text = function ()
+        get_lock_state_text = function()
             if s.is_wibar_visible_locked then
                 return " "
             end
             return ""
         end,
-        update_text = function ()
+        update_text = function()
             s.mywibox_lock_state.text = s.mywibox_lock_state.get_lock_state_text()
         end
     }
@@ -368,7 +369,9 @@ screen.connect_signal("request::desktop_decoration", function(s)
             honor_workarea = false,
             x = 0,
             y = 0,
-            width = 2560,
+            -- width = 2560,
+            -- height = 1440,
+            width = 3440,
             height = 1440,
             focus = false,
             focusable = false,
@@ -479,7 +482,7 @@ awful.keyboard.append_global_keybindings({
 awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "Left", awful.tag.viewprev, { description = "view previous", group = "tag" }),
     awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
-    awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
+    --awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 })
 
 -- Focus related keybindings
@@ -727,11 +730,54 @@ ruled.client.connect_signal("request::rules", function()
         properties = { floating = true },
     })
 
+    -- Path of exile
+    ruled.client.append_rule({
+        id = "awakened-poe",
+        rule_any = {
+            class = {
+                "awakened-poe-trade",
+            },
+        },
+        properties = {
+            floating = true,
+            -- ontop = true,
+            focus = false,
+            focusable = false,
+            titlebars_enabled = false,
+            requests_no_titlebar = true,
+            -- above = true,
+            honor_padding = false,
+            honor_workarea = false,
+            x = 0,
+            y = 0,
+            width = 2560,
+            height = 1440,
+            skip_taskbar = true,
+            size_hints_honor = false,
+            dockable = false,
+            is_fixed = true,
+            immobilized_vertical = true,
+            immobilized_horizontal = true,
+            modal = true,
+            role = "overlay",
+            -- fullscreen = true,
+            border_width = 0,
+        },
+    })
+
     -- Add titlebars to normal clients and dialogs
     ruled.client.append_rule({
         id = "titlebars",
         rule_any = { type = { "normal", "dialog" } },
         properties = { titlebars_enabled = true },
+    })
+
+    ruled.client.append_rule({
+        rule_any = { name = ".*is sharing your screen." },
+        properties = {
+            floating = true,
+            border_width = 0,
+        }
     })
 
     ruled.client.append_rule({
@@ -800,6 +846,16 @@ ruled.client.connect_signal("request::rules", function()
     -- Set Steam to always map on the tag named "9" on screen 1.
     ruled.client.append_rule({
         rule = { class = "steam" },
+        properties = { screen = 1, tag = "9" },
+    })
+    -- Set Heroic to always map on the tag named "9" on screen 1.
+    ruled.client.append_rule({
+        rule = { class = "heroic" },
+        properties = { screen = 1, tag = "9" },
+    })
+    -- Set Spotify to always map on the tag named "9" on screen 1.
+    ruled.client.append_rule({
+        rule = { class = "Spotify" },
         properties = { screen = 1, tag = "9" },
     })
     -- Set "chat" to always map on the tag named "7" on screen 1.
@@ -873,7 +929,11 @@ ruled.notification.connect_signal("request::rules", function()
         rule = {},
         properties = {
             screen = awful.screen.preferred,
-            implicit_timeout = 5,
+            implicit_timeout = 3,
+            position = "bottom_right",
+            border_width = dpi(2),
+            border_color = "#737dcc",
+            opacity = 0.2,
         },
     })
 end)
@@ -940,14 +1000,22 @@ local autorun_apps = {
     -- required for polkit authentication (not in path by default)
     "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
     --
+    -- "light-locker",
+    --
     { "dbus-update-activation-environment", "--all" },
     --
-    { "gnome-keyring-daemon",               "--start",                                 "--components=secrets" },
+    { "gnome-keyring-daemon",               "--start",                                  "--components=secrets" },
     --
-    { "xbindkeys",                          "-f",                                      "${XDG_CONFIG_HOME}/xbindkeys/config" },
+    { "xbindkeys",                          "-f",                                       "${XDG_CONFIG_HOME}/xbindkeys/config" },
     { "playerctld",                         "daemon" },
-    { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
+    -- { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
+    -- Default Keyboard config
+    -- US International
+    { "setxkbmap",                          "us",                                       "-variant",                           "intl" },
+    -- PT-BR ABNT2
+    -- { "setxkbmap", "-model", "pc105", "-layout", "br", "-variant", "abnt2" }
 }
+--awful.spawn({ "systemd-run", "--user", "--unit", "light-locker", "light-locker" })
 
 -- List of apps to start once on start-up but startup notification protocol is
 -- not supported, and therefore the startup_id required by spawn.once and
@@ -1020,7 +1088,7 @@ update_titlebars_visible()
 -- Set master factor 65%/35%
 local tags = root.tags()
 for _, t in ipairs(tags) do
-    t.master_width_factor = 0.60
+    t.master_width_factor = 0.50
 end
 
 -- vim:fileencoding=utf-8:foldmethod=marker
