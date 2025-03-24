@@ -27,13 +27,21 @@ export AWESOME_THEMES_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/awesome/themes"
 export ANDROID_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/android"
 
 # ZSH
+export HISTFILESIZE=10000000
+export HISTSIZE=100000
+export SAVEHIST=50000
+export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
 export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump"
-export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+export ARCHNEWS_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/archlinux-news"
+export ARCHNEWS_CACHE_LIFETIME=21600
+export ARCHNEWS_SHORT="${ARCHNEWS_CACHE}/short"
+export ARCHNEWS_FULL="${ARCHNEWS_CACHE}/full"
+export ARCHNEWS_DAYS=7
 
 # GTK
-export GTK_THEME=Adwaita:dark
+export GTK_THEME="Breeze-Dark"
 export GTK2_RC_FILES="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-2.0/gtkrc"
 
 # NVM
@@ -127,3 +135,8 @@ export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 
 # go
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
+
+zshenv_local="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zshenv.local"
+if [ -f $zshenv_local ]; then
+    source $zshenv_local
+fi

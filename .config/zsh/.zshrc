@@ -1,8 +1,3 @@
-HISTFILESIZE=10000000
-HISTSIZE=100000
-SAVEHIST=50000
-HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
-
 setopt HIST_FIND_NO_DUPS
 setopt INC_APPEND_HISTORY
 
@@ -14,24 +9,24 @@ fi
 
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/plugins/zsh-syntax-highlighting" ]; then
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
-            "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/plugins/zsh-syntax-highlighting"
+    "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/plugins/zsh-syntax-highlighting"
 fi
 
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship-prompt" ]; then
   git clone https://github.com/spaceship-prompt/spaceship-prompt.git \
-            "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship-prompt" \
-            --depth=1
+    "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship-prompt" \
+    --depth=1
   ln -s "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship-prompt/spaceship.zsh-theme" \
-        "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship.zsh-theme"
+    "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/themes/spaceship.zsh-theme"
 fi
 
 plugins=(
   git
-  # dotnet
+  dotnet
   pip
   docker
   docker-compose
-  #  firewalld
+  firewalld
 
   # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
@@ -51,4 +46,10 @@ eval "$(zoxide init zsh)"
 source ${ZDOTDIR:-"$XDG_CONFIG_HOME"/zsh}/aliases.zsh
 
 fastfetch
+
+distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
+
+if [ "$distro_id" = "arch" ]; then
+  source $ZDOTDIR/arch-scripts.zsh
+fi
 

@@ -5,6 +5,7 @@
 local rnotification = require("ruled.notification")
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
+-- xresources.set_dpi(96)
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
@@ -27,8 +28,8 @@ theme.fg_focus = "#ffffff"
 theme.fg_urgent = "#ffffff"
 theme.fg_minimize = "#ffffff"
 
-theme.useless_gap = dpi(6)
-theme.border_width = dpi(4)
+theme.useless_gap = dpi(3)
+theme.border_width = dpi(1)
 theme.border_color_normal = "#000000"
 theme.border_color_active = "#737dcc"
 theme.border_color_marked = "#91231c"

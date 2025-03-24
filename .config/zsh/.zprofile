@@ -1,17 +1,23 @@
-HISTFILESIZE=10000000
-HISTSIZE=100000
-SAVEHIST=50000
-HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
-
 if [ ! -d $(dirname $HISTFILE) ]; then
     echo "$(dirname $HISTFILE)/ directory does not exist. Creating it now..."
     mkdir -p $(dirname $HISTFILE)
 fi
 
-ARCHNEWS_DATES="${XDG_CACHE_HOME:-$HOME/.cache}/archlinux-news/dates"
-if [ ! -d $ARCHNEWS_DATES ]; then
-    echo "$(dirname $ARCHNEWS_DATES)/ directory does not exist. Creating it now..."
-    mkdir -p $(dirname $ARCHNEWS_DATES)
+distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
+
+echo "Testing if .zprofile is reading .zshenv: $ARCHNEWS_CACHE, $LANGUAGE, $EDITOR" >> /home/wellington/.zprofile.log
+
+if [ "$distro_id" = "arch" ] && command -v yay &> /dev/null; then
+    echo "${ARCHNEWS_CACHE}/ directory does not exist. Creating it now..."
+    mkdir -p ${ARCHNEWS_CACHE}
+fi
+
+if command -v tldr &> /dev/null; then
+    tldr --update_cache &> /dev/null &!
+fi
+
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/X11/xresources" ]; then
+    xrdb -load ~/.config/X11/xresources
 fi
 
 # Default Keyboard config

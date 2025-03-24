@@ -21,8 +21,8 @@
 !.config/fastfetch/**/*
 
 # theme for gnome
-!.config/gtk-3.0
-!.config/gtk-3.0/**/*
+!.config/gtk-*
+!.config/gtk-*/**/*
 
 # neovim settings
 !.config/nvim
@@ -34,3 +34,10 @@
 !.local/bin/flameshot-ocr
 !.local/bin/mdpreview
 
+# X11
+!X11/
+!X11/xresources
+
+# xbindkeys
+!xbindkeys/
+!xbindkeys/config

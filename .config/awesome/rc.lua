@@ -94,7 +94,9 @@ local awesome_theme = gears.filesystem.get_themes_dir() .. "mytheme/theme.lua"
 if not gfs.file_readable(awesome_theme) then
     awesome_theme = "/usr/share/awesome/themes/default/theme.lua"
 end
+-- beautiful.xresources.set_dpi(96)
 beautiful.init(awesome_theme)
+-- beautiful.xresources.set_dpi(96)
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty"
@@ -293,13 +295,12 @@ screen.connect_signal("request::desktop_decoration", function(s)
     s.mywibox = awful.wibar({
         position = "top",
         margins = {
-            left = dpi(8),
+            left = dpi(5),
             top = dpi(5),
-            right = dpi(8),
-            bottom = dpi(5),
+            right = dpi(5),
+            bottom = dpi(0),
         },
-        border_width = dpi(2),
-        -- TODO: need to be ontop because of animated wallpaper (mpv), but this is not optimal because fullscreen
+        border_width = dpi(2), -- TODO: need to be ontop because of animated wallpaper (mpv), but this is not optimal because fullscreen
         -- applications will be behind the wibox. Need to find a fix for this so that ontop isn't needed anymore
         ontop = true,
         border_color = "#232d5c",
@@ -805,9 +806,13 @@ ruled.client.connect_signal("request::rules", function()
         rule_any = {
             class = {
                 "TorGuard",
+                "Protonvpn-app",
+                "protonvpn-app",
+                "Proton VPN",
                 "Peek",
                 "peek",
                 "smile",
+                "pritunl",
             },
         },
         properties = {
@@ -836,6 +841,7 @@ ruled.client.connect_signal("request::rules", function()
     -- Set Floorp to always map on the tag named "2" on screen 1.
     ruled.client.append_rule({
         rule = { class = "floorp" },
+        except = { name = "WhatsApp — Ablaze Floorp" },
         properties = { screen = 1, tag = "2" },
     })
     -- Set Thunderbird to always map on the tag named "8" on screen 1.
@@ -867,10 +873,13 @@ ruled.client.connect_signal("request::rules", function()
                 "zapzap",
                 "ZapZap",
                 "whatsapp",
-                "crx__cifhbcnohmdccbgoicgdjpfamggdegmo", -- teams pwa (don't know if this changes ¯\_(ツ)_/¯)
+                "teams-for-linux",
             },
+            name = {
+                "WhatsApp Web"
+            }
         },
-        properties = { screen = 1, tag = "7" },
+        properties = { screen = 1, tag = "7", floating = false },
     })
 end)
 -- }}}
@@ -1008,6 +1017,8 @@ local autorun_apps = {
     --
     { "xbindkeys",                          "-f",                                       "${XDG_CONFIG_HOME}/xbindkeys/config" },
     { "playerctld",                         "daemon" },
+    -- { "dex",                                "/usr/share/applications/torguard.desktop" },
+    { "dex",                                "/usr/share/applications/protonvpn.desktop" },
     -- { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
     -- Default Keyboard config
     -- US International

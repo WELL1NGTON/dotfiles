@@ -25,20 +25,20 @@ if ! $is_nvim_installed; then
     devcontainer exec --workspace-folder . /bin/sh << 'EOF'
         set -e
         export DEBIAN_FRONTEND=noninteractive
-        sudo apt-get update
-        yes | sudo apt-get install tmux lua5.3 git
+        sudo apt-get -y update
+        sudo apt-get -y install tmux lua5.4 git make gcc ripgrep unzip xclip curl
 EOF
     echo "Installing updated neovim (manual installation)"
     devcontainer exec --workspace-folder . /bin/sh << 'EOF'
         set -e
         export DEBIAN_FRONTEND=noninteractive
         TEMPNVIM=$(mktemp -d)
-        curl -Lo $TEMPNVIM/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/v0.9.5/nvim-linux64.tar.gz
-        tar xf $TEMPNVIM/nvim-linux64.tar.gz --directory=$TEMPNVIM
-        sudo cp -r $TEMPNVIM/nvim-linux64/bin /usr
-        sudo cp -r $TEMPNVIM/nvim-linux64/lib /usr
-        sudo cp -r $TEMPNVIM/nvim-linux64/share /usr
-        sudo cp -r $TEMPNVIM/nvim-linux64/man /usr/share
+        curl -Lo $TEMPNVIM/nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+        sudo rm -rf /opt/nvim-linux64
+        sudo mkdir -p /opt/nvim-linux64
+        sudo chmod a+rX /opt/nvim-linux64
+        sudo tar -C /opt -xzf $TEMPNVIM/nvim-linux64.tar.gz
+        sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/
         rm -rf $TEMPNVIM
 EOF
     echo "Adding neovim config"

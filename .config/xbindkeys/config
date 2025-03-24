@@ -56,7 +56,11 @@
   XF86AudioPrev
 "playerctl previous"
   Control + Prior
-   
+
+# Disable middle click paste
+# "echo -n | xsel -n -i; xsel -b -c"
+#   b:2
+
 # set directly keycode (here control + f with my keyboard)
 # "xterm"
 #   c:41 + m:0x4
