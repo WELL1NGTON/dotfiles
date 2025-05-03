@@ -5,8 +5,6 @@ fi
 
 distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
 
-echo "Testing if .zprofile is reading .zshenv: $ARCHNEWS_CACHE, $LANGUAGE, $EDITOR" >> /home/wellington/.zprofile.log
-
 if [ "$distro_id" = "arch" ] && command -v yay &> /dev/null; then
     echo "${ARCHNEWS_CACHE}/ directory does not exist. Creating it now..."
     mkdir -p ${ARCHNEWS_CACHE}
