@@ -38,7 +38,7 @@ export ARCHNEWS_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/archlinux-news"
 export ARCHNEWS_CACHE_LIFETIME=21600
 export ARCHNEWS_SHORT="${ARCHNEWS_CACHE}/short"
 export ARCHNEWS_FULL="${ARCHNEWS_CACHE}/full"
-export ARCHNEWS_DAYS=7
+export ARCHNEWS_DAYS=21
 
 # GTK
 export GTK_THEME="Breeze-Dark"
@@ -135,6 +135,10 @@ export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 
 # go
 export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
+
+# aws
+export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/credentials"
+export AWS_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/config"
 
 zshenv_local="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zshenv.local"
 if [ -f $zshenv_local ]; then

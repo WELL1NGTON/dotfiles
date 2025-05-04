@@ -10,3 +10,4 @@ if [ $TERM = "xterm-kitty" ]; then
     alias icat='kitten icat';
     alias kssh='kitten ssh'; # kssh = kitty ssh...
 fi
+alias xclip="xclip -r -sel clip 1> /dev/null 2> /dev/null"
