@@ -353,7 +353,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             -- "--on-all-workspaces",
             "--x11-name=" .. mpv_name,
             "--x11-wid-title=yes",
-            -- "--wid=-1",
+            "--wid=-1",
             "--window-dragging=no",
             "/home/wellington/Pictures/wallpapers/hyper_light_drifter_fanart--jouney_951--rpixelart.mp4",
         },
@@ -710,6 +710,7 @@ ruled.client.connect_signal("request::rules", function()
                 "veromix",
                 "xtightvncviewer",
                 "awakened-poe-trade",
+                "exiled-exchange-2"
             },
             -- Note that the name property shown in xprop might be set slightly after creation of the client
             -- and the name shown there might not match defined rules here.
@@ -733,10 +734,11 @@ ruled.client.connect_signal("request::rules", function()
 
     -- Path of exile
     ruled.client.append_rule({
-        id = "awakened-poe",
+        id = "poe-trade",
         rule_any = {
             class = {
                 "awakened-poe-trade",
+                "exiled-exchange-2",
             },
         },
         properties = {
@@ -995,13 +997,13 @@ local autorun = true
 -- List of apps to start once on start-up
 local autorun_apps = {
     -- cbatticon: applet for battery status
-    --  "cbatticon",
+    "cbatticon",
     -- flameshot: screenshot tool
     "flameshot",
     -- blueman-applet: applet for bluetooth
     "blueman-applet",
     -- picom: compositor
-    "picom",
+    { "picom",                              "-b" },
     -- caffeine: prevent screen from going to sleep
     -- "caffeine start",
     -- nm-applet: applet for network manager
@@ -1024,7 +1026,7 @@ local autorun_apps = {
     -- US International
     { "setxkbmap",                          "us",                                       "-variant",                           "intl" },
     -- PT-BR ABNT2
-    -- { "setxkbmap", "-model", "pc105", "-layout", "br", "-variant", "abnt2" }
+    -- { "setxkbmap",                          "-model",                                   "pc105",                              "-layout", "br", "-variant", "abnt2" }
 }
 --awful.spawn({ "systemd-run", "--user", "--unit", "light-locker", "light-locker" })
 

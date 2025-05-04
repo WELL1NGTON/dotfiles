@@ -1,0 +1,20 @@
+#!/bin/sh
+
+mkdir -p "$XDG_CACHE_HOME/X11"
+ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"
+
+if [ -f "${XDG_CONFIG_HOME}/zsh/.zlogin" ]; then
+    . "${XDG_CONFIG_HOME}/zsh/.zlogin"
+fi
+
+if [ -f "${XDG_CONFIG_HOME}/zsh/.zprofile" ]; then
+    . "${XDG_CONFIG_HOME}/zsh/.zprofile"
+fi
+
+if [ -f "${XDG_CONFIG_HOME}/zsh/.zshenv" ]; then
+    . "${XDG_CONFIG_HOME}/zsh/.zshenv"
+fi
+
+xbindkeys -f "${XDG_CONFIG_HOME}/xbindkeys/config" &
+
+light-locker &
