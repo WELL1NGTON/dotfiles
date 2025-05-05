@@ -6,8 +6,8 @@ trap 'echo "Script exited on line $LINENO with exit code $?"' EXIT
 trap 'echo "Error occurred on line $LINENO"' ERR
 
 dot_config_path=${XDG_CONFIG_HOME:-$HOME/.config}
-dot_local_path=${XDG_DATA_HOME:-$HOME/.local}
-dot_local_share_path=${dot_local_path}/share
+dot_local_path=${HOME}/.local
+dot_local_share_path=${XDG_DATA_HOME:-$HOME/.local/share}
 
 DOTFILES_INSTALL_PATH=${DOTFILES_INSTALL_PATH:-${dot_local_share_path}/dotfiles}
 AUTO_YES=${AUTO_YES:-false}
@@ -158,7 +158,7 @@ function install_requirements_archlinux() {
     # flatpak install --noninteractive --user it.mijorus.smile
     # flatpak install --noninteractive com.valvesoftware.Steam
 
-    flatpak install --noninteractive \
+    flatpak install --noninteractive --system \
         com.github.tchx84.Flatseal \
         one.ablaze.floorp \
         com.belmoussaoui.Authenticator \
