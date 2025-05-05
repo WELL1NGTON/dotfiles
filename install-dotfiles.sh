@@ -92,6 +92,7 @@ function install_requirements_archlinux() {
         ca-certificates \
         picom \
         xbindkeys \
+        xclip \
         dex \
         lightdm \
         lightdm-gtk-greeter \
@@ -137,9 +138,16 @@ function install_requirements_archlinux() {
         noto-fonts-cjk \
         adobe-source-code-pro-fonts \
         font-manager \
-        floorp-bin
+        tesseract \
+        tesseract-data-eng \
+        tesseract-data-jpn \
+        tesseract-data-jpn_vert \
+        tesseract-data-osd \
+        tesseract-data-por
+    # floorp-bin
 
     flatpak install -y it.mijorus.smile
+    flatpak install -y flatpak run one.ablaze.floorp
 }
 
 function configure_pam_env() {
@@ -167,7 +175,6 @@ function configure_zdotdir_var() {
     zshenv_file="/etc/zsh/zshenv"
     if [ ! -f $zshenv_file ]; then
         echo "Zsh env file not found, creating it!"
-        # enable debug from here as there is some bug in my code as always....
         sudo touch $zshenv_file
     fi
     if ! grep -q "ZDOTDIR" $zshenv_file; then
@@ -256,24 +263,22 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 echo "This script needs sudo permissions to install packages and enable services"
-sudo -v
-
-if is_os_archlinux; then
-    if question_y_n "Do you want to install requirements and setup pam_env and zshenv?"; then
-        echo "Installing requirements..."
-        install_requirements_archlinux
-        echo "Installing requirements finished."
-        echo "Configuring pam_env..."
-        configure_pam_env
-        echo "Finished pam_env config. About to check if ZDOTDIR exists..."
-        echo "Configuring zshenv..."
-        configure_zdotdir_var
-        echo "Finished zshenv config. About to check if DOTFILES_INSTALL_PATH exists..."
-    fi
-    echo "DEBUG: DOTFILES_INSTALL_PATH: $DOTFILES_INSTALL_PATH"
+if ! sudo -v; then
+    echo "Failed to obtain sudo permissions. Exiting."
+    exit 1
 fi
 
-echo "testing if DOTFILES_INSTALL_PATH exists..."
+if is_os_archlinux; then
+    if question_y_n "Do you want to install and configure requirements?"; then
+        echo "Installing requirements..."
+        install_requirements_archlinux
+        echo "Configuring pam_env..."
+        configure_pam_env
+        echo "Configuring zshenv..."
+        configure_zdotdir_var
+    fi
+fi
+
 if [ ! -d "$DOTFILES_INSTALL_PATH" ]; then
     DOTFILES_INSTALL_PATH_PARENT=$(dirname "$DOTFILES_INSTALL_PATH")
     if [ ! -d "$DOTFILES_INSTALL_PATH_PARENT" ]; then
@@ -339,5 +344,5 @@ fi
 AUTO_YES=false
 if question_y_n "Do you want to reboot now?"; then
     echo "Rebooting..."
-    # sudo reboot now
+    sudo reboot now
 fi

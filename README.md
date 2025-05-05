@@ -4,6 +4,13 @@
 
 - awesomewm (git-master)
 
+## Install from github script
+
+```sh
+curl -sSL https://raw.githubusercontent.com/WELL1NGTON/dotfiles/refs/heads/main/install-dotfiles.sh -o install-dotfiles.sh
+bash install-dotfiles.sh -s -- -y -m link
+```
+
 ## Setup
 
 Configs required in `/etc/security/pam_env.conf`:
@@ -42,4 +49,3 @@ correctly.
 ## Vim config
 
 My neovim config is in the repo <https://github.com/WELL1NGTON/kickstart.nvim>
-
