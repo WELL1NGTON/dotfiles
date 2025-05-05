@@ -3,6 +3,9 @@
 -- found (e.g. lgi). If LuaRocks is not installed, do nothing.
 pcall(require, "luarocks.loader")
 
+local lgi = require("lgi")
+local Gtk = lgi.require("Gtk", "3.0")
+
 -- Standard awesome library
 local awful = require("awful")
 local gears = require("gears")
@@ -40,6 +43,15 @@ end)
 -- {{{ Variable definitions
 
 -- TODO: Find a better place for helper methods like fix_startup_id
+
+function get_icon_path(icon_name)
+    local theme = Gtk.IconTheme.get_default()
+    local info = theme:lookup_icon(icon_name, 48, 0)
+    if info then
+        return info:get_filename()
+    end
+    return nil
+end
 
 local blacklisted_snid = setmetatable({}, { __mode = "v" })
 
@@ -126,32 +138,66 @@ end
 
 -- {{{ Menu
 -- Create a launcher widget and a main menu
-local myawesomemenu = {
+local my_awesome_menu = {
+    {
+        "docs",
+        function()
+            awful.spawn("xdg-open https://awesomewm.org/apidoc/")
+        end,
+        get_icon_path("text-html"),
+    },
     {
         "hotkeys",
         function()
             hotkeys_popup.show_help(nil, awful.screen.focused())
         end,
+        get_icon_path("input-keyboard"),
     },
-    { "manual",      terminal .. " -e man awesome" },
-    { "edit config", editor_cmd .. " " .. awesome.conffile },
-    { "restart",     awesome.restart },
+    { "manual",      terminal .. " -e man awesome",         get_icon_path("help-contents") },
+    { "edit config", editor_cmd .. " " .. awesome.conffile, get_icon_path("preferences-system") },
+    { "restart",     awesome.restart,                       get_icon_path("view-refresh") },
     {
         "quit",
         function()
             awesome.quit()
         end,
+        get_icon_path("application-exit"),
     },
 }
 
-local mymainmenu = awful.menu({
+local power_menu = {
+    { "lock",      function() awful.spawn({ "light-locker-command", "-l" }) end, get_icon_path("system-lock-screen") },
+    { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,       get_icon_path("system-suspend") },
+    { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,     get_icon_path("system-hibernate") },
+    { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,        get_icon_path("system-reboot") },
+    { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,      get_icon_path("system-shutdown") },
+}
+local applications_menu = {
+    { "editor",         editor_cmd,                                                            get_icon_path("text-editor") },
+    { "file manager",   function() awful.spawn("pcmanfm") end,                                 get_icon_path("file-manager") },
+    { "screenshot",     function() awful.spawn({ "flameshot", "gui" }) end,                    get_icon_path("flameshot") },
+    { "screenshot ocr", function() awful.spawn({ "flameshot-ocr" }) end,                       get_icon_path("flameshot") },
+    { "terminal",       terminal,                                                              get_icon_path("kitty") },
+    { "web browser",    function() awful.spawn({ "flatpak", "run", "one.ablaze.floorp" }) end, get_icon_path("browser") },
+}
+
+-- icons specification: https://specifications.freedesktop.org/icon-naming-spec/latest/
+local my_main_menu = awful.menu({
     items = {
-        { "awesome",       myawesomemenu, beautiful.awesome_icon },
-        { "open terminal", terminal },
+        { "applications", applications_menu, get_icon_path("applications-system") },
+        { "awesome",      my_awesome_menu,   beautiful.awesome_icon },
+        { "power",        power_menu,        get_icon_path("system-shutdown") },
+    },
+    theme = {
+        width = dpi(150),
+        height = dpi(24),
+        border_width = dpi(2),
+        border_color = "#737dcc",
+        font = beautiful.menu_font,
     },
 })
 
-local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = mymainmenu })
+local my_launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = my_main_menu })
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -313,7 +359,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
             layout = wibox.layout.align.horizontal,
             { -- Left widgets
                 layout = wibox.layout.fixed.horizontal,
-                mylauncher,
+                my_launcher,
                 s.mytaglist,
                 s.mypromptbox,
             },
@@ -412,7 +458,7 @@ end)
 -- {{{ Mouse bindings
 awful.mouse.append_global_mousebindings({
     awful.button({}, 3, function()
-        mymainmenu:toggle()
+        my_main_menu:toggle()
     end),
     -- awful.button({}, 4, awful.tag.viewprev),
     -- awful.button({}, 5, awful.tag.viewnext),
@@ -425,7 +471,7 @@ awful.mouse.append_global_mousebindings({
 awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
     awful.key({ modkey }, "w", function()
-        mymainmenu:show()
+        my_main_menu:show()
     end, { description = "show main menu", group = "awesome" }),
     awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),

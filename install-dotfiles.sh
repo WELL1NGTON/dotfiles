@@ -86,6 +86,13 @@ function install_requirements_archlinux() {
 
     yay -Syu --noconfirm --needed \
         awesome-git \
+        sed \
+        nitrogen \
+        adwaita-icon-theme \
+        adwaita-icon-theme-legacy \
+        breeze-gtk \
+        breeze-icons \
+        papirus-icon-theme \
         ca-certificates \
         picom \
         xbindkeys \
@@ -119,7 +126,7 @@ function install_requirements_archlinux() {
         bluez-deprecated-tools \
         blueman \
         flameshot \
-        pcmanfm \
+        pcmanfm-gtk3 \
         gvfs \
         gvfs-smb \
         gvfs-mtp \
@@ -143,11 +150,20 @@ function install_requirements_archlinux() {
         tesseract-data-jpn_vert \
         tesseract-data-osd \
         tesseract-data-por
+    # synergy3-bin \
     # cbatticon \ # not needed, unless it is being installed in a notebook
     # floorp-bin # not sure if install floorp from AUR or flatpak...
 
-    flatpak --user install -y it.mijorus.smile
-    flatpak --user install -y one.ablaze.floorp
+    # flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
+    # flatpak install --noninteractive --user it.mijorus.smile
+    # flatpak install --noninteractive com.valvesoftware.Steam
+
+    flatpak install --noninteractive \
+        com.github.tchx84.Flatseal \
+        one.ablaze.floorp \
+        com.belmoussaoui.Authenticator \
+        com.usebottles.bottles \
+        it.mijorus.gearlever
 }
 
 function configure_pam_env() {
@@ -168,7 +184,6 @@ function configure_pam_env() {
     if ! grep -q "XDG_CACHE_HOME" $pam_env_file; then
         echo "XDG_CACHE_HOME  DEFAULT=@{HOME}/.cache" | sudo tee -a $pam_env_file
     fi
-    return 0
 }
 
 function configure_zdotdir_var() {
@@ -180,7 +195,6 @@ function configure_zdotdir_var() {
     if ! grep -q "ZDOTDIR" $zshenv_file; then
         echo "ZDOTDIR=$HOME/.config/zsh" | sudo tee -a $zshenv_file
     fi
-    return 0
 }
 
 function install_config() {
@@ -203,7 +217,6 @@ function install_config() {
             ln -s "$2" "$1"
         fi
     fi
-    return 0
 }
 
 function is_os_archlinux() {
@@ -230,6 +243,46 @@ function enable_services() {
             systemctl --user enable pipewire.service
             systemctl --user enable pipewire-pulse.service
             systemctl --user enable wireplumber.service
+        fi
+    fi
+}
+
+function generate_locales() {
+    if [ "$AUTO_YES" = true ]; then
+        sudo sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+        sudo sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
+        sudo locale-gen
+        sudo localectl set-locale LANG=en_US.UTF-8
+        sudo localectl set-locale LC_CTYPE=pt_BR.UTF-8
+        sudo localectl set-locale LC_NUMERIC=pt_BR.UTF-8
+        sudo localectl set-locale LC_TIME=pt_BR.UTF-8
+        sudo localectl set-locale LC_COLLATE=pt_BR.UTF-8
+        sudo localectl set-locale LC_MONETARY=pt_BR.UTF-8
+        sudo localectl set-locale LC_MESSAGES=en_US.UTF-8
+        sudo localectl set-locale LC_PAPER=pt_BR.UTF-8
+        sudo localectl set-locale LC_NAME=pt_BR.UTF-8
+        sudo localectl set-locale LC_ADDRESS=pt_BR.UTF-8
+        sudo localectl set-locale LC_TELEPHONE=pt_BR.UTF-8
+        sudo localectl set-locale LC_MEASUREMENT=pt_BR.UTF-8
+        sudo localectl set-locale LC_IDENTIFICATION=pt_BR.UTF-8
+    else
+        if question_y_n "Do you want to generate locales?"; then
+            sudo sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+            sudo sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
+            sudo locale-gen
+            sudo localectl set-locale LANG=en_US.UTF-8
+            sudo localectl set-locale LC_CTYPE=pt_BR.UTF-8
+            sudo localectl set-locale LC_NUMERIC=pt_BR.UTF-8
+            sudo localectl set-locale LC_TIME=pt_BR.UTF-8
+            sudo localectl set-locale LC_COLLATE=pt_BR.UTF-8
+            sudo localectl set-locale LC_MONETARY=pt_BR.UTF-8
+            sudo localectl set-locale LC_MESSAGES=en_US.UTF-8
+            sudo localectl set-locale LC_PAPER=pt_BR.UTF-8
+            sudo localectl set-locale LC_NAME=pt_BR.UTF-8
+            sudo localectl set-locale LC_ADDRESS=pt_BR.UTF-8
+            sudo localectl set-locale LC_TELEPHONE=pt_BR.UTF-8
+            sudo localectl set-locale LC_MEASUREMENT=pt_BR.UTF-8
+            sudo localectl set-locale LC_IDENTIFICATION=pt_BR.UTF-8
         fi
     fi
 }
