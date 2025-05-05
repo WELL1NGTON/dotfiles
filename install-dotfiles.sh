@@ -11,10 +11,7 @@ dot_local_share_path=${dot_local_path}/share
 
 DOTFILES_INSTALL_PATH=${DOTFILES_INSTALL_PATH:-${dot_local_share_path}/dotfiles}
 AUTO_YES=${AUTO_YES:-false}
-MODE="link"
-
-echo "DOTFILES_INSTALL_PATH: $DOTFILES_INSTALL_PATH"
-sleep 3
+MODE="copy"
 
 LANGUAGE="${LANG%%_*}"
 LOCALE="${LANG%.*}"
@@ -147,7 +144,7 @@ function install_requirements_archlinux() {
     # floorp-bin
 
     flatpak install -y it.mijorus.smile
-    flatpak install -y flatpak run one.ablaze.floorp
+    flatpak install -y one.ablaze.floorp
 }
 
 function configure_pam_env() {
