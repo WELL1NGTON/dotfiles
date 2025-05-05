@@ -997,7 +997,7 @@ local autorun = true
 -- List of apps to start once on start-up
 local autorun_apps = {
     -- cbatticon: applet for battery status
-    "cbatticon",
+    -- "cbatticon",
     -- flameshot: screenshot tool
     "flameshot",
     -- blueman-applet: applet for bluetooth

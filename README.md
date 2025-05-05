@@ -1,17 +1,18 @@
 # My Dotfiles
 
-## Requirements
-
-- awesomewm (git-master)
-
 ## Install from github script
 
 ```sh
+# download, customize and run the script
 curl -sSL https://raw.githubusercontent.com/WELL1NGTON/dotfiles/refs/heads/main/install-dotfiles.sh -o install-dotfiles.sh
-bash install-dotfiles.sh -s -- -y -m link
+# you can use -y to skip the confirmation prompts... every conflict in .config
+# will be overwritten
+bash install-dotfiles.sh -s -- -m link # or -m copy and also -y for skipping confirmation
 ```
 
-## Setup
+## Manual install
+
+### Setup
 
 Configs required in `/etc/security/pam_env.conf`:
 
@@ -22,7 +23,7 @@ XDG_STATE_HOME  DEFAULT=@{HOME}/.local/state
 XDG_CACHE_HOME  DEFAULT=@{HOME}/.cache
 ```
 
-## ZSH config
+### ZSH config
 
 Configs required in `/etc/zsh/zshenv`:
 
@@ -45,6 +46,13 @@ the plugin
 
 Obs.: make sure that the environment variable `ZSH` and `ZDOTDIR` are set
 correctly.
+
+### Copy configs
+
+```sh
+mkdir -p ~/.config
+cp -r .config/* ~/.config
+```
 
 ## Vim config
 

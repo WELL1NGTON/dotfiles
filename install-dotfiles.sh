@@ -114,8 +114,10 @@ function install_requirements_archlinux() {
         man-db \
         man-pages-pt_BR \
         networkmanager \
+        bluez \
+        bluez-utils \
+        bluez-deprecated-tools \
         blueman \
-        cbatticon \
         flameshot \
         pcmanfm \
         gvfs \
@@ -141,10 +143,11 @@ function install_requirements_archlinux() {
         tesseract-data-jpn_vert \
         tesseract-data-osd \
         tesseract-data-por
-    # floorp-bin
+    # cbatticon \ # not needed, unless it is being installed in a notebook
+    # floorp-bin # not sure if install floorp from AUR or flatpak...
 
-    flatpak install -y it.mijorus.smile
-    flatpak install -y one.ablaze.floorp
+    flatpak --user install -y it.mijorus.smile
+    flatpak --user install -y one.ablaze.floorp
 }
 
 function configure_pam_env() {
