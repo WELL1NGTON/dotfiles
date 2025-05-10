@@ -96,7 +96,7 @@ if command -v yay &> /dev/null; then
         update_archnews $ARCHNEWS_SHORT false &!
     fi
     if [[ ! -f $ARCHNEWS_FULL || $(is_file_outdated $ARCHNEWS_FULL $ARCHNEWS_CACHE_LIFETIME) ]]; then
-        update_archnews $ARCHNEWS_FULL false &!
+        update_archnews $ARCHNEWS_FULL true &!
     fi
-    time print_archnews
+    print_archnews
 fi
