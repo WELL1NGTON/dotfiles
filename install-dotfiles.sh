@@ -86,7 +86,11 @@ function install_requirements_archlinux() {
 
     yay -Syu --noconfirm --needed \
         awesome-git \
+        inotify-tools \
         sed \
+        feh \
+        playerctl \
+        network-manager-applet \
         nitrogen \
         adwaita-icon-theme \
         adwaita-icon-theme-legacy \
@@ -97,6 +101,8 @@ function install_requirements_archlinux() {
         picom \
         xbindkeys \
         xclip \
+        clipnotify \
+        glib2 \
         dex \
         lightdm \
         lightdm-gtk-greeter \
@@ -104,6 +110,8 @@ function install_requirements_archlinux() {
         light-locker \
         polkit \
         polkit-gnome \
+        seahorse \
+        pasystray \
         xdg-utils \
         xdg-desktop-portal \
         xdg-desktop-portal-gtk \
@@ -149,7 +157,8 @@ function install_requirements_archlinux() {
         tesseract-data-jpn \
         tesseract-data-jpn_vert \
         tesseract-data-osd \
-        tesseract-data-por
+        tesseract-data-por \
+        pandoc-cli
     # synergy3-bin \
     # cbatticon \ # not needed, unless it is being installed in a notebook
     # floorp-bin # not sure if install floorp from AUR or flatpak...
@@ -379,9 +388,11 @@ local_bin_path=${dot_local_path}/bin
 if [ ! -d "$local_bin_path" ]; then
     mkdir -p "$local_bin_path"
 fi
+install_config "$dot_local_path"/bin/clip-persist "${DOTFILES_INSTALL_PATH}"/.local/bin/clip-persist
 install_config "$dot_local_path"/bin/devc-start "${DOTFILES_INSTALL_PATH}"/.local/bin/devc-start
 install_config "$dot_local_path"/bin/flameshot-ocr "${DOTFILES_INSTALL_PATH}"/.local/bin/flameshot-ocr
 install_config "$dot_local_path"/bin/mdpreview "${DOTFILES_INSTALL_PATH}"/.local/bin/mdpreview
+install_config "$dot_local_path"/bin/set-wallpaper "${DOTFILES_INSTALL_PATH}"/.local/bin/set-wallpaper
 
 install_config "${HOME}"/.xprofile "${DOTFILES_INSTALL_PATH}"/.xprofile
 

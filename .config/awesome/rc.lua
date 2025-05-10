@@ -53,6 +53,10 @@ function get_icon_path(icon_name)
     return nil
 end
 
+local function notify_send(msg)
+    awful.spawn.with_shell("notify-send '" .. msg .. "'")
+end
+
 local blacklisted_snid = setmetatable({}, { __mode = "v" })
 
 --- Make startup notification work for some clients like XTerm. This is ugly
@@ -378,6 +382,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
     -- INFO: Animated wallpaper: wanted to put this on the "request::wallpaper" signal, but it don't works in there...
     local mpv_name = "awesomewm_wallpaper_mpv" .. tostring(s.index)
     ruled.client.add_rule_source(mpv_name, fix_startup_id, {}, { "awful.spawn", "ruled.client" })
+    awful.spawn.with_shell("pkill -9 mpv")
     awful.spawn.single_instance(
         {
             "mpv",
@@ -1042,37 +1047,43 @@ local autorun = true
 
 -- List of apps to start once on start-up
 local autorun_apps = {
-    -- cbatticon: applet for battery status
+    -- ------------------ cbatticon: applet for battery status ------------------ --
     -- "cbatticon",
-    -- flameshot: screenshot tool
+    -- ----------------------- flameshot: screenshot tool ----------------------- --
     "flameshot",
-    -- blueman-applet: applet for bluetooth
+    -- ------------------ blueman-applet: applet for bluetooth ------------------ --
     "blueman-applet",
-    -- picom: compositor
+    -- ---------------------------- picom: compositor --------------------------- --
     { "picom",                              "-b" },
-    -- caffeine: prevent screen from going to sleep
+    -- -------------- caffeine: prevent screen from going to sleep -------------- --
     -- "caffeine start",
-    -- nm-applet: applet for network manager
+    -- ------------------ nm-applet: applet for network manager ----------------- --
     "nm-applet",
-    -- required for polkit authentication (not in path by default)
+    -- ------------ system-config-printer-applet: applet for printer ------------ --
+    "system-config-printer-applet",
+    -- ------- required for polkit authentication (not in path by default) ------ --
     "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
-    --
+    -- ------------------ light-locker: lock screen on suspend ------------------ --
     -- "light-locker",
-    --
     { "dbus-update-activation-environment", "--all" },
-    --
+    -- -------------- gnome-keyring: daemon for password management ------------- --
     { "gnome-keyring-daemon",               "--start",                                  "--components=secrets" },
-    --
-    { "xbindkeys",                          "-f",                                       "${XDG_CONFIG_HOME}/xbindkeys/config" },
+    -- ---------------- xbindkeys: daemon for keyboard shortcuts ---------------- --
+    -- { "xbindkeys",                          "-f",                                       os.getenv("XDG_CONFIG_HOME") .. "/xbindkeys/config" },
+    -- playerctld: daemon for controlling music players
     { "playerctld",                         "daemon" },
+    --
     -- { "dex",                                "/usr/share/applications/torguard.desktop" },
     { "dex",                                "/usr/share/applications/protonvpn.desktop" },
     -- { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
     -- Default Keyboard config
-    -- US International
-    { "setxkbmap",                          "us",                                       "-variant",                           "intl" },
-    -- PT-BR ABNT2
+    -- ------------- set keyboard layout to US international variant ------------ --
+    { "setxkbmap",                          "us",                                       "-variant",            "intl" },
+    -- ------------- set keyboard layout to Brazilian ABNT2 variant ------------- --
     -- { "setxkbmap",                          "-model",                                   "pc105",                              "-layout", "br", "-variant", "abnt2" }
+    -- --------------------------- clip persist script -------------------------- --
+    os.getenv("HOME") .. "/.local/bin/clip-persist",
+    os.getenv("HOME") .. "/.local/bin/set-wallpaper",
 }
 --awful.spawn({ "systemd-run", "--user", "--unit", "light-locker", "light-locker" })
 
@@ -1117,6 +1128,11 @@ local function isRunning(app)
         return false
     end
 end
+
+awful.spawn.with_shell("killall -q picom")
+awful.spawn.with_shell("killall -q nm-applet")
+awful.spawn.with_shell("killall -q blueman-applet")
+awful.spawn.with_shell("killall -q flameshot")
 
 if autorun then
     for app = 1, #autorun_apps do

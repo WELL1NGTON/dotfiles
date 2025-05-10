@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Script to persist clipboard (xclip) content for some time, allowing for paste
+# after the program that copied the content has exited and also making sure to
+# not keep data in the clipboard for too long (clean up after CLIP_TIMEOUT
+# seconds).
+
+CLIP_TIMEOUT=60
+LOCKFILE="/run/user/${UID}/clip-persist.lock"
+BG_PID=""
+
+cleanup() {
+    if [ -n "$BG_PID" ] && kill -0 "$BG_PID" 2>/dev/null; then
+        kill "$BG_PID" 2>/dev/null
+    fi
+    pkill -P $$ 2>/dev/null
+}
+
+trap cleanup EXIT
+
+# Use flock to ensure only one instance of the script runs
+exec 200>"$LOCKFILE"
+if ! flock -n 200; then
+    echo "clip-persist is already running."
+    exit 1
+fi
+
+while clipnotify; do
+    if [ -n "$BG_PID" ] && kill -0 "$BG_PID" 2>/dev/null; then
+        kill "$BG_PID" 2>/dev/null
+    fi
+
+    CONTENT_TYPE=$(xclip -o -selection clipboard -t TARGETS 2>/dev/null | grep -m 1 "text/plain")
+    if [ -n "$CONTENT_TYPE" ]; then
+        xclip -o -selection clipboard | xclip -i -selection clipboard
+    fi
+
+    (sleep "$CLIP_TIMEOUT" && echo -n | xclip -i -selection clipboard) &
+    BG_PID=$!
+done

@@ -96,7 +96,8 @@ theme.titlebar_maximized_button_focus_inactive = global_themes_path .. "default/
 theme.titlebar_maximized_button_normal_active = global_themes_path .. "default/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_active = global_themes_path .. "default/titlebar/maximized_focus_active.png"
 
-local background_path = os.getenv("HOME") .. "/Pictures/wallpapers/israel-sundseth-0bP5v79i7sU-unsplash.jpg"
+local background_path = "/usr/share/backgrounds/archlinux/landscape.jpg"
+
 if not gfs.file_readable(background_path) then
     background_path = global_themes_path .. "default/background.png"
 end

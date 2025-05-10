@@ -33,6 +33,8 @@
 !.local/bin/devc-start
 !.local/bin/flameshot-ocr
 !.local/bin/mdpreview
+!.local/bin/clip-persist
+!.local/bin/set-wallpaper
 
 # X11
 !X11/

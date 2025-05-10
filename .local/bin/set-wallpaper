@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# set random wallpaper example: feh --bg-fill https://picsum.photos/1920/1080
+
+set -e
+
+xrandr_line=$(xrandr | grep -E -m 1 " connected primary| connected")
+resolution=$(echo "$xrandr_line" | grep -oP '\d+x\d+' | head -n 1)
+width=$(echo "$resolution" | cut -d'x' -f1)
+height=$(echo "$resolution" | cut -d'x' -f2)
+
+feh --bg-fill "https://picsum.photos/${width}/${height}"
