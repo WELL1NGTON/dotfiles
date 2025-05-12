@@ -1054,7 +1054,7 @@ local autorun_apps = {
     -- ------------------ blueman-applet: applet for bluetooth ------------------ --
     "blueman-applet",
     -- ---------------------------- picom: compositor --------------------------- --
-    { "picom",                              "-b" },
+    { "picom",                "-b" },
     -- -------------- caffeine: prevent screen from going to sleep -------------- --
     -- "caffeine start",
     -- ------------------ nm-applet: applet for network manager ----------------- --
@@ -1063,24 +1063,16 @@ local autorun_apps = {
     "system-config-printer-applet",
     -- ------- required for polkit authentication (not in path by default) ------ --
     "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
-    -- ------------------ light-locker: lock screen on suspend ------------------ --
-    -- "light-locker",
-    { "dbus-update-activation-environment", "--all" },
     -- -------------- gnome-keyring: daemon for password management ------------- --
-    { "gnome-keyring-daemon",               "--start",                                  "--components=secrets" },
+    { "gnome-keyring-daemon", "--start",                                  "--components=secrets" },
     -- ---------------- xbindkeys: daemon for keyboard shortcuts ---------------- --
     -- { "xbindkeys",                          "-f",                                       os.getenv("XDG_CONFIG_HOME") .. "/xbindkeys/config" },
     -- playerctld: daemon for controlling music players
-    { "playerctld",                         "daemon" },
+    { "playerctld",           "daemon" },
     --
     -- { "dex",                                "/usr/share/applications/torguard.desktop" },
-    { "dex",                                "/usr/share/applications/protonvpn.desktop" },
+    { "dex",                  "/usr/share/applications/protonvpn.desktop" },
     -- { "flatpak",                            "run",                                     "it.mijorus.smile",                   "--start-hidden" },
-    -- Default Keyboard config
-    -- ------------- set keyboard layout to US international variant ------------ --
-    { "setxkbmap",                          "us",                                       "-variant",            "intl" },
-    -- ------------- set keyboard layout to Brazilian ABNT2 variant ------------- --
-    -- { "setxkbmap",                          "-model",                                   "pc105",                              "-layout", "br", "-variant", "abnt2" }
     -- --------------------------- clip persist script -------------------------- --
     os.getenv("HOME") .. "/.local/bin/clip-persist",
     os.getenv("HOME") .. "/.local/bin/set-wallpaper",
@@ -1160,7 +1152,6 @@ end
 -- make all titlebars hidden by default
 update_titlebars_visible()
 
--- Set master factor 65%/35%
 local tags = root.tags()
 for _, t in ipairs(tags) do
     t.master_width_factor = 0.50

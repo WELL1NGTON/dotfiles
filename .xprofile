@@ -1,20 +1,42 @@
 #!/bin/sh
 
-mkdir -p "$XDG_CACHE_HOME/X11"
-ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"
-
-if [ -f "${XDG_CONFIG_HOME}/zsh/.zlogin" ]; then
-    . "${XDG_CONFIG_HOME}/zsh/.zlogin"
+# Source zsh dotfiles if they exist
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin" ]; then
+    . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin"
+fi
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zprofile" ]; then
+    . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zprofile"
+fi
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zshenv" ]; then
+    . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zshenv"
 fi
 
-if [ -f "${XDG_CONFIG_HOME}/zsh/.zprofile" ]; then
-    . "${XDG_CONFIG_HOME}/zsh/.zprofile"
+# Define the error log file for the X session
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/X11"
+ERRFILE="${XDG_CACHE_HOME:-$HOME/.cache}/X11/xsession-errors"
+
+# Load X resources configuration
+xrdb -load "${XDG_CONFIG_HOME:-$HOME/.config}"/X11/xresources 2>>"${ERRFILE}"
+# Default Keyboard config
+#--- US International ---#
+# setxkbmap us -variant intl
+#--- PT-BR ABNT2 ---#
+# # setxkbmap -model pc105 -layout br -variant abnt2
+#--- US/BR ---#
+setxkbmap us,br -variant intl,abnt2 -model ,pc105
+
+# Start xbindkeys with the specified configuration file
+if ! pgrep -x "xbindkeys" >/dev/null; then
+    xbindkeys -f "${XDG_CONFIG_HOME:-$HOME/.config}/xbindkeys/config" &
 fi
 
-if [ -f "${XDG_CONFIG_HOME}/zsh/.zshenv" ]; then
-    . "${XDG_CONFIG_HOME}/zsh/.zshenv"
+# Start the light-locker screen locker
+if pgrep -x "lightdm" >/dev/null && ! pgrep -x "light-locker" >/dev/null; then
+    light-locker &
 fi
 
-xbindkeys -f "${XDG_CONFIG_HOME}/xbindkeys/config" &
-
-light-locker &
+# Update the D-Bus activation environment with the current environment variables
+# dbus-update-activation-environment --all
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment --systemd DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS PATH WAYLAND_DISPLAY
+fi

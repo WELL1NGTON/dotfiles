@@ -208,8 +208,8 @@ function configure_zdotdir_var() {
 
 function install_config() {
     if [ "$MODE" = "copy" ]; then
-        if [ -d "$1" ] || [ -L "$1" ]; then
-            if question_y_n "$2 configuration already exists. Overwrite?"; then
+        if [ -f "$1" ] || [ -d "$1" ] || [ -L "$1" ]; then
+            if question_y_n "$1 configuration already exists. Overwrite?"; then
                 rm -rf "$1"
                 cp -r "$2" "$1"
             fi
@@ -217,8 +217,8 @@ function install_config() {
             cp -r "$2" "$1"
         fi
     elif [ "$MODE" = "link" ]; then
-        if [ -d "$1" ] || [ -L "$1" ]; then
-            if question_y_n "$2 configuration already exists. Overwrite?"; then
+        if [ -f "$1" ] || [ -d "$1" ] || [ -L "$1" ]; then
+            if question_y_n "$1 configuration already exists. Overwrite?"; then
                 rm -rf "$1"
                 ln -sf "$2" "$1"
             fi
@@ -342,6 +342,7 @@ if is_os_archlinux; then
 fi
 
 if [ ! -d "$DOTFILES_INSTALL_PATH" ]; then
+    echo "DOTFILES_INSTALL_PATH does not exist. Cloning the repository..."
     DOTFILES_INSTALL_PATH_PARENT=$(dirname "$DOTFILES_INSTALL_PATH")
     if [ ! -d "$DOTFILES_INSTALL_PATH_PARENT" ]; then
         mkdir -p "$DOTFILES_INSTALL_PATH_PARENT"
@@ -357,6 +358,11 @@ if [ ! -d "$DOTFILES_INSTALL_PATH" ]; then
         echo "SSH authentication failed or not configured. Cloning via HTTPS..."
         git clone "$repo_https" "$DOTFILES_INSTALL_PATH"
     fi
+else
+    echo "DOTFILES_INSTALL_PATH already exists. Updating..."
+    cd "$DOTFILES_INSTALL_PATH"
+    git fetch
+    git pull
 fi
 
 echo "DOTFILES_INSTALL_PATH exists, continuing with the script..."
@@ -377,7 +383,6 @@ install_config "$dot_config_path"/npm "${DOTFILES_INSTALL_PATH}"/.config/npm
 install_config "$dot_config_path"/pcmanfm "${DOTFILES_INSTALL_PATH}"/.config/pcmanfm
 install_config "$dot_config_path"/picom "${DOTFILES_INSTALL_PATH}"/.config/picom
 install_config "$dot_config_path"/spotify-player "${DOTFILES_INSTALL_PATH}"/.config/spotify-player
-install_config "$dot_config_path"/thefuck "${DOTFILES_INSTALL_PATH}"/.config/thefuck
 install_config "$dot_config_path"/X11 "${DOTFILES_INSTALL_PATH}"/.config/X11
 install_config "$dot_config_path"/xbindkeys "${DOTFILES_INSTALL_PATH}"/.config/xbindkeys
 install_config "$dot_config_path"/zsh "${DOTFILES_INSTALL_PATH}"/.config/zsh

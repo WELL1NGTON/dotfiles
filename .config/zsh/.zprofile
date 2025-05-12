@@ -13,28 +13,3 @@ fi
 if command -v tldr &> /dev/null; then
     tldr --update_cache &> /dev/null &!
 fi
-
-if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/X11/xresources" ]; then
-    xrdb -load ~/.config/X11/xresources
-fi
-
-# Default Keyboard config
-# US International
-# setxkbmap us -variant intl
-# PT-BR ABNT2
-# setxkbmap -model pc105 -layout br -variant abnt2
-
-# # Disable the screensaver
-# xset s off
-# xset -dpms
-# xset s noblank
-
-# # Disable the screen lock
-# xautolock -disable
-
-# # Disable the screen blanking
-# xset s off
-# xset -dpck
-# xset s noblank
-
-# https://bbs.archlinux.org/viewtopic.php?id=251330
