@@ -14,6 +14,18 @@ local global_themes_path = "/usr/share/awesome/themes/"
 
 local theme = {}
 
+local lgi = require("lgi")
+local Gtk = lgi.require("Gtk", "3.0")
+
+local function get_icon_path(icon_name)
+    local theme = Gtk.IconTheme.get_default()
+    local info = theme:lookup_icon(icon_name, 48, 0)
+    if info then
+        return info:get_filename()
+    end
+    return nil
+end
+
 -- theme.font = "Fira Sans 10"
 theme.font = "Fira Sans 12"
 
@@ -60,7 +72,7 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(taglist_square_
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
-theme.menu_submenu_icon = global_themes_path .. "default/submenu.png"
+theme.menu_submenu_icon = get_icon_path("pan-end-symbolic")
 theme.menu_height = dpi(20)
 theme.menu_width = dpi(100)
 
@@ -70,31 +82,31 @@ theme.menu_width = dpi(100)
 --theme.bg_widget = "#cc0000"
 
 -- Define the image to load
-theme.titlebar_close_button_normal = global_themes_path .. "default/titlebar/close_normal.png"
-theme.titlebar_close_button_focus = global_themes_path .. "default/titlebar/close_focus.png"
+theme.titlebar_close_button_normal = get_icon_path("window-close-symbolic")
+theme.titlebar_close_button_focus = get_icon_path("window-close")
 
-theme.titlebar_minimize_button_normal = global_themes_path .. "default/titlebar/minimize_normal.png"
-theme.titlebar_minimize_button_focus = global_themes_path .. "default/titlebar/minimize_focus.png"
+theme.titlebar_minimize_button_normal = get_icon_path("window-minimize-symbolic")
+theme.titlebar_minimize_button_focus = get_icon_path("window-minimize")
 
-theme.titlebar_ontop_button_normal_inactive = global_themes_path .. "default/titlebar/ontop_normal_inactive.png"
-theme.titlebar_ontop_button_focus_inactive = global_themes_path .. "default/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_active = global_themes_path .. "default/titlebar/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_active = global_themes_path .. "default/titlebar/ontop_focus_active.png"
+theme.titlebar_ontop_button_normal_inactive = get_icon_path("go-top-symbolic")
+theme.titlebar_ontop_button_focus_inactive = get_icon_path("go-top")
+theme.titlebar_ontop_button_normal_active = get_icon_path("view-paged-symbolic")
+theme.titlebar_ontop_button_focus_active = get_icon_path("view-paged")
 
 theme.titlebar_sticky_button_normal_inactive = global_themes_path .. "default/titlebar/sticky_normal_inactive.png"
 theme.titlebar_sticky_button_focus_inactive = global_themes_path .. "default/titlebar/sticky_focus_inactive.png"
 theme.titlebar_sticky_button_normal_active = global_themes_path .. "default/titlebar/sticky_normal_active.png"
 theme.titlebar_sticky_button_focus_active = global_themes_path .. "default/titlebar/sticky_focus_active.png"
 
-theme.titlebar_floating_button_normal_inactive = global_themes_path .. "default/titlebar/floating_normal_inactive.png"
-theme.titlebar_floating_button_focus_inactive = global_themes_path .. "default/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_active = global_themes_path .. "default/titlebar/floating_normal_active.png"
-theme.titlebar_floating_button_focus_active = global_themes_path .. "default/titlebar/floating_focus_active.png"
+theme.titlebar_floating_button_normal_inactive = get_icon_path("view-grid-symbolic")
+theme.titlebar_floating_button_focus_inactive = get_icon_path("view-grid")
+theme.titlebar_floating_button_normal_active = get_icon_path("airplane-mode-symbolic")
+theme.titlebar_floating_button_focus_active = get_icon_path("airplane-mode-symbolic")
 
-theme.titlebar_maximized_button_normal_inactive = global_themes_path .. "default/titlebar/maximized_normal_inactive.png"
-theme.titlebar_maximized_button_focus_inactive = global_themes_path .. "default/titlebar/maximized_focus_inactive.png"
-theme.titlebar_maximized_button_normal_active = global_themes_path .. "default/titlebar/maximized_normal_active.png"
-theme.titlebar_maximized_button_focus_active = global_themes_path .. "default/titlebar/maximized_focus_active.png"
+theme.titlebar_maximized_button_normal_inactive = get_icon_path("view-fullscreen-symbolic")
+theme.titlebar_maximized_button_focus_inactive = get_icon_path("view-fullscreen")
+theme.titlebar_maximized_button_normal_active = get_icon_path("view-restore-symbolic")
+theme.titlebar_maximized_button_focus_active = get_icon_path("view-restore")
 
 local background_path = "/usr/share/backgrounds/archlinux/landscape.jpg"
 
@@ -121,8 +133,9 @@ theme.layout_cornerne = global_themes_path .. "default/layouts/cornernew.png"
 theme.layout_cornersw = global_themes_path .. "default/layouts/cornersww.png"
 theme.layout_cornerse = global_themes_path .. "default/layouts/cornersew.png"
 
--- Generate Awesome icon:
-theme.awesome_icon = theme_assets.awesome_icon(theme.menu_height, theme.bg_focus, theme.fg_focus)
+-- Arch awesome icon modified to be blue
+-- source: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
+theme.awesome_icon = themes_path .. "mytheme/archlinux-wm-awesome.svg"
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.

@@ -358,11 +358,35 @@ if [ ! -d "$DOTFILES_INSTALL_PATH" ]; then
         echo "SSH authentication failed or not configured. Cloning via HTTPS..."
         git clone "$repo_https" "$DOTFILES_INSTALL_PATH"
     fi
+    git submodule update --init --recursive
 else
     echo "DOTFILES_INSTALL_PATH already exists. Updating..."
     cd "$DOTFILES_INSTALL_PATH"
-    git fetch
-    git pull
+    git fetch origin
+    if git pull --ff-only; then
+        echo "Repository updated successfully."
+    else
+        echo "Failed to update the repository. Do you want to reset it? [Y/n]"
+        if [ "$AUTO_YES" = true ]; then
+            echo "Y"
+            git reset --hard origin/main
+        else
+            read -r answer
+            answer=${answer^^}
+
+            if [ -z "$answer" ]; then
+                answer="Y"
+            fi
+
+            if [ "$answer" = "Y" ]; then
+                git reset --hard origin/main
+            else
+                echo "Exiting without resetting the repository."
+                exit 1
+            fi
+        fi
+    fi
+    git submodule update --init --recursive
 fi
 
 echo "DOTFILES_INSTALL_PATH exists, continuing with the script..."
@@ -370,34 +394,35 @@ cd "$DOTFILES_INSTALL_PATH"
 if [ ! -d "$dot_config_path" ]; then
     mkdir -p "$dot_config_path"
 fi
-install_config "$dot_config_path"/alacritty "${DOTFILES_INSTALL_PATH}"/.config/alacritty
-install_config "$dot_config_path"/awesome "${DOTFILES_INSTALL_PATH}"/.config/awesome
-install_config "$dot_config_path"/fastfetch "${DOTFILES_INSTALL_PATH}"/.config/fastfetch
-install_config "$dot_config_path"/git "${DOTFILES_INSTALL_PATH}"/.config/git
-install_config "$dot_config_path"/gtk-2.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-2.0
-install_config "$dot_config_path"/gtk-3.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-3.0
-install_config "$dot_config_path"/gtk-4.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-4.0
-install_config "$dot_config_path"/luarocks "${DOTFILES_INSTALL_PATH}"/.config/luarocks
-install_config "$dot_config_path"/npm "${DOTFILES_INSTALL_PATH}"/.config/npm
-# install_config "$dot_config_path"/nvim "${DOTFILES_INSTALL_PATH}"/.config/nvim
-install_config "$dot_config_path"/pcmanfm "${DOTFILES_INSTALL_PATH}"/.config/pcmanfm
-install_config "$dot_config_path"/picom "${DOTFILES_INSTALL_PATH}"/.config/picom
-install_config "$dot_config_path"/spotify-player "${DOTFILES_INSTALL_PATH}"/.config/spotify-player
-install_config "$dot_config_path"/X11 "${DOTFILES_INSTALL_PATH}"/.config/X11
-install_config "$dot_config_path"/xbindkeys "${DOTFILES_INSTALL_PATH}"/.config/xbindkeys
-install_config "$dot_config_path"/zsh "${DOTFILES_INSTALL_PATH}"/.config/zsh
-install_config "$dot_config_path"/mimeapps.list "${DOTFILES_INSTALL_PATH}"/.config/mimeapps.list
-install_config "$dot_config_path"/gtk-4.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-4.0
+install_config "${dot_config_path}"/alacritty "${DOTFILES_INSTALL_PATH}"/.config/alacritty
+install_config "${dot_config_path}"/awesome "${DOTFILES_INSTALL_PATH}"/.config/awesome
+install_config "${dot_config_path}"/fastfetch "${DOTFILES_INSTALL_PATH}"/.config/fastfetch
+install_config "${dot_config_path}"/git "${DOTFILES_INSTALL_PATH}"/.config/git
+install_config "${dot_config_path}"/gtk-2.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-2.0
+install_config "${dot_config_path}"/gtk-3.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-3.0
+install_config "${dot_config_path}"/gtk-4.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-4.0
+install_config "${dot_config_path}"/kitty "${DOTFILES_INSTALL_PATH}"/.config/kitty
+install_config "${dot_config_path}"/luarocks "${DOTFILES_INSTALL_PATH}"/.config/luarocks
+install_config "${dot_config_path}"/npm "${DOTFILES_INSTALL_PATH}"/.config/npm
+install_config "${dot_config_path}"/nvim "${DOTFILES_INSTALL_PATH}"/.config/nvim
+install_config "${dot_config_path}"/pcmanfm "${DOTFILES_INSTALL_PATH}"/.config/pcmanfm
+install_config "${dot_config_path}"/picom "${DOTFILES_INSTALL_PATH}"/.config/picom
+install_config "${dot_config_path}"/spotify-player "${DOTFILES_INSTALL_PATH}"/.config/spotify-player
+install_config "${dot_config_path}"/X11 "${DOTFILES_INSTALL_PATH}"/.config/X11
+install_config "${dot_config_path}"/xbindkeys "${DOTFILES_INSTALL_PATH}"/.config/xbindkeys
+install_config "${dot_config_path}"/zsh "${DOTFILES_INSTALL_PATH}"/.config/zsh
+install_config "${dot_config_path}"/mimeapps.list "${DOTFILES_INSTALL_PATH}"/.config/mimeapps.list
+install_config "${dot_config_path}"/gtk-4.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-4.0
 
 local_bin_path=${dot_local_path}/bin
 if [ ! -d "$local_bin_path" ]; then
     mkdir -p "$local_bin_path"
 fi
-install_config "$dot_local_path"/bin/clip-persist "${DOTFILES_INSTALL_PATH}"/.local/bin/clip-persist
-install_config "$dot_local_path"/bin/devc-start "${DOTFILES_INSTALL_PATH}"/.local/bin/devc-start
-install_config "$dot_local_path"/bin/flameshot-ocr "${DOTFILES_INSTALL_PATH}"/.local/bin/flameshot-ocr
-install_config "$dot_local_path"/bin/mdpreview "${DOTFILES_INSTALL_PATH}"/.local/bin/mdpreview
-install_config "$dot_local_path"/bin/set-wallpaper "${DOTFILES_INSTALL_PATH}"/.local/bin/set-wallpaper
+install_config "${local_bin_path}"/clip-persist "${DOTFILES_INSTALL_PATH}"/.local/bin/clip-persist
+install_config "${local_bin_path}"/devc-start "${DOTFILES_INSTALL_PATH}"/.local/bin/devc-start
+install_config "${local_bin_path}"/flameshot-ocr "${DOTFILES_INSTALL_PATH}"/.local/bin/flameshot-ocr
+install_config "${local_bin_path}"/mdpreview "${DOTFILES_INSTALL_PATH}"/.local/bin/mdpreview
+install_config "${local_bin_path}"/set-wallpaper "${DOTFILES_INSTALL_PATH}"/.local/bin/set-wallpaper
 
 install_config "${HOME}"/.xprofile "${DOTFILES_INSTALL_PATH}"/.xprofile
 

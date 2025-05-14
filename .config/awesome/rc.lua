@@ -44,7 +44,7 @@ end)
 
 -- TODO: Find a better place for helper methods like fix_startup_id
 
-function get_icon_path(icon_name)
+local function get_icon_path(icon_name)
     local theme = Gtk.IconTheme.get_default()
     local info = theme:lookup_icon(icon_name, 48, 0)
     if info then
@@ -169,8 +169,11 @@ local my_awesome_menu = {
     },
 }
 
+-- icons specification: https://specifications.freedesktop.org/icon-naming-spec/latest/
+-- can check icons installing package gtk3-demos and opening gtk3-icon-browser
 local power_menu = {
     { "lock",      function() awful.spawn({ "light-locker-command", "-l" }) end, get_icon_path("system-lock-screen") },
+    { "sleep",     function() awful.spawn({ "systemctl", "sleep" }) end,         get_icon_path("preferences-desktop-screensaver-symbolic") },
     { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,       get_icon_path("system-suspend") },
     { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,     get_icon_path("system-hibernate") },
     { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,        get_icon_path("system-reboot") },
@@ -185,7 +188,6 @@ local applications_menu = {
     { "web browser",    function() awful.spawn({ "flatpak", "run", "one.ablaze.floorp" }) end, get_icon_path("browser") },
 }
 
--- icons specification: https://specifications.freedesktop.org/icon-naming-spec/latest/
 local my_main_menu = awful.menu({
     items = {
         { "applications", applications_menu, get_icon_path("applications-system") },
@@ -1047,8 +1049,6 @@ local autorun = true
 
 -- List of apps to start once on start-up
 local autorun_apps = {
-    -- ------------------ cbatticon: applet for battery status ------------------ --
-    -- "cbatticon",
     -- ----------------------- flameshot: screenshot tool ----------------------- --
     "flameshot",
     -- ------------------ blueman-applet: applet for bluetooth ------------------ --
@@ -1088,6 +1088,8 @@ local autorun_apps_no_startup_id = {
     { "pasystray", "--key-grabbing" },
     -- pcmanfm: file manager
     { "pcmanfm",   "--daemon-mode", "--no-desktop" },
+    -- ------------------ cbatticon: applet for battery status ------------------ --
+    -- "cbatticon",
 }
 
 local function get_only_app_name(app)
