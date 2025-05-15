@@ -1,0 +1,37 @@
+configuration {
+  timeout {
+      action: "kb-cancel";
+      delay:  0;
+  }
+  filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
+  icon-theme: "Papirus";
+  font: "FiraCode Nerd Font 12";
+  modes: "drun,run";
+  show-icons: true;
+  cycle: true;
+  click-to-exit: true;
+  case-sensitive: false;
+  kb-accept-entry: "Return";
+  kb-cancel: "Escape";
+  kb-row-up: "Up,Control+p";
+  kb-row-down: "Down,Control+n";
+  kb-element-next: "Tab,Alt+Tab,Super+Tab";
+  kb-element-previous: "Shift+Tab,Alt+Shift+Tab,Super+Shift+Tab";
+
+  display-window: "    ";
+  display-windowcd: "[  ]";
+  display-run: " ";
+  /*	display-ssh: ;*/
+  display-drun: "󰨇 ";
+  /*	display-combi: ;*/
+  /*	display-keys: ;*/
+  /*	display-filebrowser: ;*/
+  /*	display-recursivebrowser: ;*/
+  display-emoji: " ";
+}
+
+@theme "/usr/share/rofi/themes/material.rasi"
+// @theme "/usr/share/rofi/themes/sidebar-v2.rasi"

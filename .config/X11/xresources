@@ -7,8 +7,8 @@ Xft.hintstyle: hintslight
 Xcursor.theme: Breeze
 Xcursor.size: 24
 
-*.font: xft:Fira Code:size=10
-XTerm*faceName: Fira Code
+*.font: xft:FiraCode Nerd Font:size=10
+XTerm*faceName: FiraCode Nerd Font
 XTerm*faceSize: 10
 
 ! https://github.com/Gogh-Co/Gogh/blob/master/themes/Vs%20Code%20Dark%2B.yml

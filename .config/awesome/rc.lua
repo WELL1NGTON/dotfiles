@@ -180,6 +180,7 @@ local power_menu = {
     { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,      get_icon_path("system-shutdown") },
 }
 local applications_menu = {
+    { "app launcher",   function() awful.spawn("rofi -show drun -no-click-to-exit") end,       get_icon_path("applications-other") },
     { "editor",         editor_cmd,                                                            get_icon_path("text-editor") },
     { "file manager",   function() awful.spawn("pcmanfm") end,                                 get_icon_path("file-manager") },
     { "screenshot",     function() awful.spawn({ "flameshot", "gui" }) end,                    get_icon_path("flameshot") },
@@ -204,6 +205,17 @@ local my_main_menu = awful.menu({
 })
 
 local my_launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = my_main_menu })
+my_launcher.forced_width = dpi(42)
+my_launcher.valign = "center"
+my_launcher.halign = "center"
+my_launcher:connect_signal("mouse::enter", function()
+    my_launcher.image = beautiful.awesome_icon_highlight
+    my_launcher:emit_signal("widget::redraw_needed")
+end)
+my_launcher:connect_signal("mouse::leave", function()
+    my_launcher.image = beautiful.awesome_icon
+    my_launcher:emit_signal("widget::redraw_needed")
+end)
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
@@ -388,7 +400,7 @@ screen.connect_signal("request::desktop_decoration", function(s)
     awful.spawn.single_instance(
         {
             "mpv",
-            -- "--x11-bypass-compositor=yes",
+            "--x11-bypass-compositor=yes",
             "--no-input-default-bindings",
             "--no-config",
             "--panscan=1.0",
@@ -406,9 +418,10 @@ screen.connect_signal("request::desktop_decoration", function(s)
             -- "--on-all-workspaces",
             "--x11-name=" .. mpv_name,
             "--x11-wid-title=yes",
-            "--wid=-1",
+            -- "--wid=-1",
             "--window-dragging=no",
-            "/home/wellington/Pictures/wallpapers/hyper_light_drifter_fanart--jouney_951--rpixelart.mp4",
+            -- source: https://www.deviantart.com/kirokaze/art/Lost-Papers-858379921
+            os.getenv("HOME") .. "/Pictures/wallpapers/lost_papers_by_kirokaze_de7226p.gif",
         },
         {
             floating = true,
@@ -490,15 +503,33 @@ awful.keyboard.append_global_keybindings({
             history_path = awful.util.get_cache_dir() .. "/history_eval",
         })
     end, { description = "lua execute prompt", group = "awesome" }),
+    awful.key({ modkey }, "Tab", function()
+        awful.spawn("rofi -show window -modi windowcd,window")
+    end, { description = "rofi window switcher (all windows)", group = "awesome" }),
+    awful.key({ modkey, "Shift" }, "Tab", function()
+        awful.spawn("rofi -show windowcd -modi windowcd,window")
+    end, { description = "rofi window switcher (all windows)", group = "awesome" }),
+    awful.key({ "Mod1" }, "Tab", function()
+        awful.spawn("rofi -show windowcd -modi windowcd,window")
+    end, { description = "rofi window switcher (current workspace)", group = "awesome" }),
+    awful.key({ "Mod1", "Shift" }, "Tab", function()
+        awful.spawn("rofi -show window -modi windowcd,window")
+    end, { description = "rofi window switcher (current workspace)", group = "awesome" }),
     awful.key({ modkey }, "Return", function()
         awful.spawn(terminal)
     end, { description = "open a terminal", group = "launcher" }),
     awful.key({ modkey }, "r", function()
+        awful.spawn("rofi -show run")
+    end, { description = "run prompt in rofi", group = "launcher" }),
+    awful.key({ modkey, "Shift" }, "r", function()
         awful.screen.focused().mypromptbox:run()
     end, { description = "run prompt", group = "launcher" }),
-    awful.key({ modkey }, "p", function()
+    awful.key({ modkey, "Shift" }, "p", function()
         menubar.show()
     end, { description = "show the menubar", group = "launcher" }),
+    awful.key({ modkey }, "p", function()
+        awful.spawn("rofi -show drun")
+    end, { description = "show rofi as launcher", group = "launcher" }),
     awful.key({ modkey }, "b", function()
         local myscreen = awful.screen.focused()
         myscreen.mywibox.visible = not myscreen.mywibox.visible
@@ -527,9 +558,15 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "Escape", function()
         awful.spawn.easy_async({ "light-locker-command", "-l" })
     end, { description = "lock the screen with lighdm", group = "awesome" }),
+    awful.key({ modkey, "Shift" }, "Escape", function()
+        awful.spawn("rofi -show p -modi p:rofi-power-menu")
+    end, { description = "show power menu", group = "awesome" }),
+    awful.key({ "Control", "Shift" }, "Escape", function()
+        awful.spawn({ terminal, "-e", "bpytop" })
+    end, { description = "show power menu", group = "awesome" }),
     awful.key({ modkey }, ".", function()
-        awful.spawn({ "flatpak", "run", "it.mijorus.smile" })
-    end, { description = "emojis", group = "awesome" }),
+        awful.spawn({ "rofi", "-show", "emoji", "-modi", "emoji" })
+    end, { description = "show emoji picker", group = "awesome" }),
 })
 
 -- Tags related keybindings

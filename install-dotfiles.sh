@@ -86,6 +86,12 @@ function install_requirements_archlinux() {
 
     yay -Syu --noconfirm --needed \
         awesome-git \
+        rofi \
+        rofi-emoji \
+        rofi-power-menu \
+        rofi-rbw \
+        copt \
+        rbw \
         inotify-tools \
         sed \
         feh \
@@ -124,6 +130,7 @@ function install_requirements_archlinux() {
         zoxide \
         ripgrep \
         fastfetch \
+        btop \
         bpytop \
         man-pages \
         man-db \
@@ -144,6 +151,7 @@ function install_requirements_archlinux() {
         wireplumber \
         mpv \
         ttf-fira-code \
+        ttf-fira-mono \
         ttf-fira-sans \
         ttf-firacode-nerd \
         noto-fonts \
@@ -164,7 +172,6 @@ function install_requirements_archlinux() {
     # floorp-bin # not sure if install floorp from AUR or flatpak...
 
     # flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
-    # flatpak install --noninteractive --user it.mijorus.smile
     # flatpak install --noninteractive com.valvesoftware.Steam
 
     flatpak install --noninteractive --system \
@@ -407,12 +414,12 @@ install_config "${dot_config_path}"/npm "${DOTFILES_INSTALL_PATH}"/.config/npm
 install_config "${dot_config_path}"/nvim "${DOTFILES_INSTALL_PATH}"/.config/nvim
 install_config "${dot_config_path}"/pcmanfm "${DOTFILES_INSTALL_PATH}"/.config/pcmanfm
 install_config "${dot_config_path}"/picom "${DOTFILES_INSTALL_PATH}"/.config/picom
+install_config "${dot_config_path}"/rofi "${DOTFILES_INSTALL_PATH}"/.config/rofi
 install_config "${dot_config_path}"/spotify-player "${DOTFILES_INSTALL_PATH}"/.config/spotify-player
 install_config "${dot_config_path}"/X11 "${DOTFILES_INSTALL_PATH}"/.config/X11
 install_config "${dot_config_path}"/xbindkeys "${DOTFILES_INSTALL_PATH}"/.config/xbindkeys
 install_config "${dot_config_path}"/zsh "${DOTFILES_INSTALL_PATH}"/.config/zsh
 install_config "${dot_config_path}"/mimeapps.list "${DOTFILES_INSTALL_PATH}"/.config/mimeapps.list
-install_config "${dot_config_path}"/gtk-4.0 "${DOTFILES_INSTALL_PATH}"/.config/gtk-4.0
 
 local_bin_path=${dot_local_path}/bin
 if [ ! -d "$local_bin_path" ]; then

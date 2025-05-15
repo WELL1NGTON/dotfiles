@@ -136,6 +136,17 @@ theme.layout_cornerse = global_themes_path .. "default/layouts/cornersew.png"
 -- Arch awesome icon modified to be blue
 -- source: https://sources.archlinux.org/other/artwork/archlinux-artwork-1.6.tar.gz
 theme.awesome_icon = themes_path .. "mytheme/archlinux-wm-awesome.svg"
+theme.awesome_icon_highlight = themes_path .. "mytheme/archlinux-wm-awesome-highlight.svg"
+
+-- local awesome_icon_data_as_str = io.open(theme.awesome_icon, "r"):read("*all")
+-- -- replace 5bb0ff for 80caff
+-- awesome_icon_data_as_str = awesome_icon_data_as_str:gsub("5bb0ff", "80caff")
+-- -- replace 1a4e89 for 4fa1ff
+-- awesome_icon_data_as_str = awesome_icon_data_as_str:gsub("1a4e89", "4fa1ff")
+
+-- theme.awesome_icon_highlighted = awesome_icon_data_as_str
+
+
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
