@@ -84,89 +84,136 @@ function install_requirements_archlinux() {
         fi
     fi
 
-    yay -Syu --noconfirm --needed \
-        awesome-git \
-        rofi \
-        rofi-emoji \
-        rofi-power-menu \
-        rofi-rbw \
-        copt \
-        rbw \
-        inotify-tools \
-        sed \
-        feh \
-        playerctl \
-        network-manager-applet \
-        nitrogen \
-        adwaita-icon-theme \
-        adwaita-icon-theme-legacy \
-        breeze-gtk \
-        breeze-icons \
-        papirus-icon-theme \
-        ca-certificates \
-        picom \
-        xbindkeys \
-        xclip \
-        clipnotify \
-        glib2 \
-        dex \
-        lightdm \
-        lightdm-gtk-greeter \
-        lightdm-gtk-greeter-settings \
-        light-locker \
-        polkit \
-        polkit-gnome \
-        seahorse \
-        pasystray \
-        xdg-utils \
-        xdg-desktop-portal \
-        xdg-desktop-portal-gtk \
-        kitty \
-        neovim \
-        zsh \
-        thefuck \
-        tldr \
-        pyenv \
-        zoxide \
-        ripgrep \
-        fastfetch \
-        btop \
-        bpytop \
-        man-pages \
-        man-db \
-        man-pages-pt_BR \
-        networkmanager \
-        bluez \
-        bluez-utils \
-        bluez-deprecated-tools \
-        blueman \
-        flameshot \
-        pcmanfm-gtk3 \
-        gvfs \
-        gvfs-smb \
-        gvfs-mtp \
-        flatpak \
-        pipewire \
-        pipewire-pulse \
-        wireplumber \
-        mpv \
-        ttf-fira-code \
-        ttf-fira-mono \
-        ttf-fira-sans \
-        ttf-firacode-nerd \
-        noto-fonts \
-        noto-fonts-extra \
-        noto-fonts-emoji \
-        noto-fonts-cjk \
-        adobe-source-code-pro-fonts \
-        font-manager \
-        tesseract \
-        tesseract-data-eng \
-        tesseract-data-jpn \
-        tesseract-data-jpn_vert \
-        tesseract-data-osd \
-        tesseract-data-por \
-        pandoc-cli
+    local display_and_desktop_environment=(
+        "lightdm"
+        "lightdm-gtk-greeter"
+        "lightdm-gtk-greeter-settings"
+        "light-locker"
+        "picom"
+        "feh"
+        "xwinwrap-git"
+        "dex"
+        "xbindkeys"
+        "xclip"
+        "clipnotify"
+        "brightnessctl"
+        "playerctl"
+        "polkit"
+        "polkit-gnome"
+        "xdg-utils"
+        "xdg-desktop-portal"
+        "xdg-desktop-portal-gtk"
+        "network-manager-applet"
+        "pasystray"
+        "blueman"
+    )
+
+    local themes_icons_fonts=(
+        "breeze-gtk"
+        "adwaita-icon-theme"
+        "adwaita-icon-theme-legacy"
+        "breeze-icons"
+        "papirus-icon-theme"
+        "ttf-fira-code"
+        "ttf-fira-mono"
+        "ttf-fira-sans"
+        "ttf-firacode-nerd"
+        "noto-fonts"
+        "noto-fonts-extra"
+        "noto-fonts-emoji"
+        "noto-fonts-cjk"
+        "adobe-source-code-pro-fonts"
+        "font-manager"
+        "archlinux-wallpaper"
+    )
+
+    local launchers_and_utilities=(
+        "rofi"
+        "rofi-emoji"
+        "rofi-power-menu"
+        "rofi-rbw"
+        "awesome-git"
+        "kitty"
+        "pcmanfm-gtk3"
+        "flameshot"
+    )
+
+    local security_and_credentials=(
+        "rbw"
+        "cotp"
+        "seahorse"
+        "ca-certificates"
+    )
+
+    local networking_and_multimedia=(
+        "networkmanager"
+        "bluez"
+        "bluez-utils"
+        "bluez-deprecated-tools"
+        "gvfs"
+        "gvfs-smb"
+        "gvfs-mtp"
+    )
+
+    local audio_media=(
+        "pipewire"
+        "pipewire-pulse"
+        "wireplumber"
+        "mpv"
+    )
+
+    local ocr=(
+        "tesseract"
+        "tesseract-data-eng"
+        "tesseract-data-jpn"
+        "tesseract-data-jpn_vert"
+        "tesseract-data-osd"
+        "tesseract-data-por"
+    )
+
+    local docs=(
+        "man-pages"
+        "man-pages-pt_br"
+        "man-db"
+        "tldr"
+        "pandoc-cli"
+    )
+
+    local shell_term_tools=(
+        "zsh"
+        "thefuck"
+        "zoxide"
+        "pyenv"
+        "tldr"
+        "ripgrep"
+        "fastfetch"
+        "btop"
+        "bpytop"
+        "neovim"
+    )
+
+    local system_utilities=(
+        "inotify-tools"
+        "sed"
+        "glib2"
+        "tk"
+        "flatpak"
+    )
+
+    local packages_to_install=(
+        "${display_and_desktop_environment[@]}"
+        "${themes_icons_fonts[@]}"
+        "${launchers_and_utilities[@]}"
+        "${security_and_credentials[@]}"
+        "${networking_and_multimedia[@]}"
+        "${audio_media[@]}"
+        "${ocr[@]}"
+        "${docs[@]}"
+        "${shell_term_tools[@]}"
+        "${system_utilities[@]}"
+    )
+
+    yay -Syu --noconfirm --needed "${packages_to_install[@]}"
     # synergy3-bin \
     # cbatticon \ # not needed, unless it is being installed in a notebook
     # floorp-bin # not sure if install floorp from AUR or flatpak...
@@ -429,6 +476,7 @@ install_config "${local_bin_path}"/clip-persist "${DOTFILES_INSTALL_PATH}"/.loca
 install_config "${local_bin_path}"/devc-start "${DOTFILES_INSTALL_PATH}"/.local/bin/devc-start
 install_config "${local_bin_path}"/flameshot-ocr "${DOTFILES_INSTALL_PATH}"/.local/bin/flameshot-ocr
 install_config "${local_bin_path}"/mdpreview "${DOTFILES_INSTALL_PATH}"/.local/bin/mdpreview
+install_config "${local_bin_path}"/set-animated-wallpaper "${DOTFILES_INSTALL_PATH}"/.local/bin/set-animated-wallpaper
 install_config "${local_bin_path}"/set-wallpaper "${DOTFILES_INSTALL_PATH}"/.local/bin/set-wallpaper
 
 install_config "${HOME}"/.xprofile "${DOTFILES_INSTALL_PATH}"/.xprofile

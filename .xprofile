@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if command -v nvidia-settings >/dev/null 2>&1 && [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/nvidia/settings" ]; then
+    nvidia-settings --load-config-only --config=${XDG_CONFIG_HOME:-$HOME/.config}/nvidia/settings
+fi
+
 # Source zsh dotfiles if they exist
 if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin" ]; then
     . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin"
