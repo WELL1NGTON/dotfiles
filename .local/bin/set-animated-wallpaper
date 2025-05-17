@@ -1,0 +1,26 @@
+#!/bin/bash
+
+ANIMATED_WALLPAPER="$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif"
+
+xrandr_line=$(xrandr | grep -E -m 1 " connected primary| connected")
+resolution=$(echo "$xrandr_line" | grep -oP '\d+x\d+' | head -n 1)
+width=$(echo "$resolution" | cut -d'x' -f1)
+height=$(echo "$resolution" | cut -d'x' -f2)
+
+xwinwrapid=$(pgrep xwinwrap)
+mpv=$(pgrep --list-full mpv | grep "$ANIMATED_WALLPAPER" | awk '{print $1}')
+if [[ -n "$mpv" ]]; then
+    kill -9 "$mpv"
+fi
+if [[ -n "$xwinwrapid" ]]; then
+    kill -9 "$xwinwrapid"
+fi
+
+# sleep for 1 second to ensure the kill command has time to execute
+sleep 1
+
+if [ -f "$ANIMATED_WALLPAPER" ]; then
+    xwinwrap -ov -g "${width}"x"${height}"+0+0 -- mpv --no-audio --loop --no-osd-bar --osc=no --no-border --stop-screensaver=no --panscan=1.0 --scale=nearest --no-input-default-bindings --no-config --wid=%WID "$ANIMATED_WALLPAPER" &
+else
+    echo "Animated wallpaper not found at $ANIMATED_WALLPAPER"
+fi

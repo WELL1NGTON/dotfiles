@@ -5,7 +5,7 @@ fi
 
 distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
 
-if [ "$distro_id" = "arch" ] && command -v yay &> /dev/null; then
+if [ "$distro_id" = "arch" ] && [ ! -d "${ARCHNEWS_CACHE}" ] && command -v yay &> /dev/null; then
     echo "${ARCHNEWS_CACHE}/ directory does not exist. Creating it now..."
     mkdir -p ${ARCHNEWS_CACHE}
 fi

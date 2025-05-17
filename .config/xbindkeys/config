@@ -59,6 +59,16 @@
 "playerctl previous"
   Control + Prior
 
+# Brightness Control
+# "xbacklight -dec 10"
+#     XF86MonBrightnessDown
+# "xbacklight -inc 10"
+#     XF86MonBrightnessUp
+"brightnessctl set 10%-"
+    XF86MonBrightnessDown
+"brightnessctl set +10%"
+    XF86MonBrightnessUp
+
 # Disable middle click paste
 # "echo -n | xsel -n -i; xsel -b -c"
 #   b:2

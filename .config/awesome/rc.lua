@@ -53,48 +53,19 @@ local function get_icon_path(icon_name)
     return nil
 end
 
-local function notify_send(msg)
-    awful.spawn.with_shell("notify-send '" .. msg .. "'")
-end
-
-local blacklisted_snid = setmetatable({}, { __mode = "v" })
-
---- Make startup notification work for some clients like XTerm. This is ugly
--- but works often enough to be useful.
-local function fix_startup_id(c)
-    -- Prevent "broken" sub processes created by <code>c</code> to inherit its SNID
-    if c.startup_id then
-        blacklisted_snid[c.startup_id] = blacklisted_snid[c.startup_id] or c
-        return
+local function notify_send(msg, title)
+    if not title then
+        awful.spawn.with_shell({
+            "notify-send",
+            msg,
+        })
+    else
+        awful.spawn.with_shell({
+            "notify-send",
+            title,
+            msg,
+        })
     end
-
-    if not c.pid then
-        return
-    end
-
-    -- Read the process environment variables
-    local f = io.open("/proc/" .. c.pid .. "/environ", "rb")
-
-    -- It will only work on Linux, that's already 99% of the userbase.
-    if not f then
-        return
-    end
-
-    local value = _VERSION <= "Lua 5.1" and "([^\z]*)\0" or "([^\0]*)\0"
-    local snid = f:read("*all"):match("STARTUP_ID=" .. value)
-    f:close()
-
-    -- If there is already a client using this SNID, it means it's either a
-    -- subprocess or another window for the same process. While it makes sense
-    -- in some case to apply the same rules, it is not always the case, so
-    -- better doing nothing rather than something stupid.
-    if not snid or blacklisted_snid[snid] then
-        return
-    end
-
-    c.startup_id = snid
-
-    blacklisted_snid[snid] = c
 end
 
 -- custom/temporary debug variable
@@ -392,85 +363,6 @@ screen.connect_signal("request::desktop_decoration", function(s)
             },
         },
     })
-
-    -- INFO: Animated wallpaper: wanted to put this on the "request::wallpaper" signal, but it don't works in there...
-    local mpv_name = "awesomewm_wallpaper_mpv" .. tostring(s.index)
-    ruled.client.add_rule_source(mpv_name, fix_startup_id, {}, { "awful.spawn", "ruled.client" })
-    awful.spawn.with_shell("pkill -9 mpv")
-    awful.spawn.single_instance(
-        {
-            "mpv",
-            "--x11-bypass-compositor=yes",
-            "--no-input-default-bindings",
-            "--no-config",
-            "--panscan=1.0",
-            -- "--fullscreen",
-            "--scale=nearest",
-            "--no-border",
-            "--osc=no",
-            "--keepaspect",
-            "--stop-screensaver=no",
-            "--loop-file=yes",
-            "--no-audio",
-            "--osd-level=0",
-            "--ontop=no",
-            "--ontop-level=0",
-            -- "--on-all-workspaces",
-            "--x11-name=" .. mpv_name,
-            "--x11-wid-title=yes",
-            -- "--wid=-1",
-            "--window-dragging=no",
-            -- source: https://www.deviantart.com/kirokaze/art/Lost-Papers-858379921
-            os.getenv("HOME") .. "/Pictures/wallpapers/lost_papers_by_kirokaze_de7226p.gif",
-        },
-        {
-            floating = true,
-            border_width = 0,
-            ontop = false,
-            above = false,
-            below = true,
-            skip_taskbar = true,
-            size_hints_honor = false,
-            requests_no_titlebar = true,
-            honor_padding = false,
-            honor_workarea = false,
-            x = 0,
-            y = 0,
-            -- width = 2560,
-            -- height = 1440,
-            width = 3440,
-            height = 1440,
-            focus = false,
-            focusable = false,
-            sticky = true,
-            startup_id = mpv_name,
-            first_tag = mpv_name,
-            titlebars_enabled = false,
-            dockable = false,
-            class = mpv_name,
-            instance = mpv_name,
-            screen = s,
-            type = "desktop",
-            tag = "9",
-            is_fixed = true,
-            immobilized_vertical = true,
-            immobilized_horizontal = true,
-            modal = true,
-            role = "wallpaper",
-            fullscreen = true,
-        },
-        function(c)
-            return c.instance == mpv_name
-        end,
-        mpv_name,
-        function(c)
-            -- s.mywibox.ontop = false
-            --c.above = false
-            c.below = true
-            --c:lower()
-            -- c:emit_signal("lowered")
-        end
-    )
 end)
 
 -- }}}
@@ -934,7 +826,7 @@ ruled.client.connect_signal("request::rules", function()
     ruled.client.append_rule({
         rule = { class = "floorp" },
         except = { name = "WhatsApp — Ablaze Floorp" },
-        properties = { screen = 1, tag = "2" },
+        properties = { screen = 1, tag = "1" },
     })
     -- Set Thunderbird to always map on the tag named "8" on screen 1.
     ruled.client.append_rule({
@@ -1113,6 +1005,7 @@ local autorun_apps = {
     -- --------------------------- clip persist script -------------------------- --
     os.getenv("HOME") .. "/.local/bin/clip-persist",
     os.getenv("HOME") .. "/.local/bin/set-wallpaper",
+    os.getenv("HOME") .. "/.local/bin/set-animated-wallpaper",
 }
 --awful.spawn({ "systemd-run", "--user", "--unit", "light-locker", "light-locker" })
 
@@ -1170,7 +1063,7 @@ if autorun then
         awful.spawn.single_instance(autorun_apps[app])
 
         if is_debug_enabled then
-            awful.spawn.with_shell("notify-send 'Test' '" .. get_only_app_name(autorun_apps[app]) .. "'")
+            notify_send(get_only_app_name(autorun_apps[app]), "Debug: autorun app started")
         end
     end
 
@@ -1181,7 +1074,7 @@ if autorun then
         end
 
         if is_debug_enabled then
-            awful.spawn.with_shell("notify-send 'Test' '" .. get_only_app_name(autorun_apps_no_startup_id[app]) .. "'")
+            notify_send(get_only_app_name(autorun_apps_no_startup_id[app]), "Debug: autorun app (custom start) started")
         end
     end
 end
