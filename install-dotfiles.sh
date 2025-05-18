@@ -412,6 +412,7 @@ if [ ! -d "$DOTFILES_INSTALL_PATH" ]; then
         echo "SSH authentication failed or not configured. Cloning via HTTPS..."
         git clone "$repo_https" "$DOTFILES_INSTALL_PATH"
     fi
+    cd "$DOTFILES_INSTALL_PATH"
     git submodule update --init --recursive
 else
     echo "DOTFILES_INSTALL_PATH already exists. Updating..."
