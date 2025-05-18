@@ -4,7 +4,7 @@
 
 ```sh
 # download, customize and run the script
-curl -sSL https://raw.githubusercontent.com/WELL1NGTON/dotfiles/refs/heads/main/install-dotfiles.sh -o install-dotfiles.sh
+curl -sSL https://raw.githubusercontent.com/WELL1NGTON/dotfiles/refs/heads/master/install-dotfiles.sh -o install-dotfiles.sh
 # You can use -y to skip the confirmation prompts. However every conflict in
 # .config will be overwritten if you use -y.
 # And -m can be "link" or "copy" to indicate if you want to create symlinks or

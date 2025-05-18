@@ -312,8 +312,11 @@ function enable_services() {
 
 function generate_locales() {
     if [ "$AUTO_YES" = true ]; then
-        sudo sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-        sudo sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
+        temp_dir=$(mktemp -d)
+        cp /etc/locale.gen "$temp_dir/locale.gen"
+        sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' "$temp_dir/locale.gen"
+        sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' "$temp_dir/locale.gen"
+        sudo cp "$temp_dir/locale.gen" /etc/locale.gen
         sudo locale-gen
         sudo localectl set-locale LANG=en_US.UTF-8
         sudo localectl set-locale LC_CTYPE=pt_BR.UTF-8
