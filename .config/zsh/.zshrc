@@ -1,6 +1,9 @@
 setopt HIST_FIND_NO_DUPS
 setopt INC_APPEND_HISTORY
 
+# PATH
+PATH="$HOME/.local/bin:${XDG_DATA_HOME:-$HOME/.local/share}/npm/bin:$PNPM_HOME:$GOPATH/bin:$HOME/.cargo/bin:$HOME/.dotnet/tools:$HOME/.local/share/dotnet/tools:$PATH:/var/lib/flatpak/exports/bin:/var/lib/snapd/snap/bin"
+
 ZSH_THEME="spaceship"
 
 if [ ! -d ${ZSH:-$HOME/.local/share/oh-my-zsh} ]; then
@@ -32,12 +35,10 @@ plugins=(
   zsh-syntax-highlighting
 
   # https://python-poetry.org/docs/#installing-with-the-official-installer
-  poetry
+  # poetry
 )
 
 source ${ZSH:-$HOME/.local/share/oh-my-zsh}/oh-my-zsh.sh
-
-eval $(thefuck --alias)
 
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
@@ -52,4 +53,3 @@ distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
 if [ "$distro_id" = "arch" ]; then
   source $ZDOTDIR/arch-scripts.zsh
 fi
-
