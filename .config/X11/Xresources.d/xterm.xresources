@@ -1,0 +1,6 @@
+XTerm*faceName: FiraCode Nerd Font
+XTerm*faceSize: 10
+XTerm*utf8: 1
+XTerm*eightBitInput: false
+XTerm*metaSendsEscape: true
+XTerm*locale: true

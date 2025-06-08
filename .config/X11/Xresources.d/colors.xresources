@@ -1,16 +1,3 @@
-Xft.dpi: 96
-Xft.antialias: true
-Xft.rgba: rgb
-Xft.hinting: true
-Xft.hintstyle: hintslight
-
-Xcursor.theme: Breeze
-Xcursor.size: 24
-
-*.font: xft:FiraCode Nerd Font:size=10
-XTerm*faceName: FiraCode Nerd Font
-XTerm*faceSize: 10
-
 ! https://github.com/Gogh-Co/Gogh/blob/master/themes/Vs%20Code%20Dark%2B.yml
 *.foreground:   #CCCCCC
 *.background:   #1E1E1E

@@ -1,0 +1,4 @@
+#include "Xresources.d/fonts.xresources"
+#include "Xresources.d/colors.xresources"
+#include "Xresources.d/cursor.xresources"
+#include "Xresources.d/xterm.xresources"

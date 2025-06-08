@@ -1,1 +1,4 @@
 .vscode
+.zcompdump*
+*.zwc
+.config/**/*.local

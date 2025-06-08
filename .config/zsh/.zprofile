@@ -96,9 +96,9 @@ export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
 export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
 
 # General
-# export TERM=alacritty
+export TERM=xterm-kitty
 export BROWSER=one.ablaze.floorp
-export MAIL=thunderbird
+export MAIL=eu.betterbird.Betterbird
 export EDITOR=nvim
 export CUDA_CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/nv"
 

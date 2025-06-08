@@ -7,7 +7,7 @@ PATH="$HOME/.local/bin:${XDG_DATA_HOME:-$HOME/.local/share}/npm/bin:$PNPM_HOME:$
 ZSH_THEME="spaceship"
 
 if [ ! -d ${ZSH:-$HOME/.local/share/oh-my-zsh} ]; then
-  ZSH=${ZSH:-$HOME/.local/share/oh-my-zsh} git clone https://github.com/ohmyzsh/ohmyzsh.git $ZSH
+  git clone https://github.com/ohmyzsh/ohmyzsh.git ${ZSH:-$HOME/.local/share/oh-my-zsh}
 fi
 
 if [ ! -d "${ZSH_CUSTOM:-$HOME/.local/share/oh-my-zsh}/plugins/zsh-syntax-highlighting" ]; then

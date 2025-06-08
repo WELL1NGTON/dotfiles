@@ -20,7 +20,7 @@ mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/X11"
 ERRFILE="${XDG_CACHE_HOME:-$HOME/.cache}/X11/xsession-errors"
 
 # Load X resources configuration
-xrdb -load "${XDG_CONFIG_HOME:-$HOME/.config}"/X11/xresources 2>>"${ERRFILE}"
+xrdb -load -I"${XDG_CONFIG_HOME:-$HOME/.config}"/X11 "${XDG_CONFIG_HOME:-$HOME/.config}/X11/Xresources" 2>>"${ERRFILE}"
 # Keyboard layout settings
 #--- US International ---#
 # setxkbmap us -variant intl
@@ -38,6 +38,8 @@ fi
 if pgrep -x "lightdm" >/dev/null && ! pgrep -x "light-locker" >/dev/null; then
     light-locker &
 fi
+
+xautolock -time 15 -locker 'systemctl suspend' -notify 600 -notifier 'i3lock | xset dpms force off' &
 
 # Update the D-Bus activation environment with the current environment variables
 # dbus-update-activation-environment --all

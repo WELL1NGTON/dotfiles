@@ -85,16 +85,18 @@ function install_requirements_archlinux() {
     fi
 
     local display_and_desktop_environment=(
-        "lightdm"
-        "lightdm-gtk-greeter"
-        "lightdm-gtk-greeter-settings"
-        "light-locker"
+        "sddm"
         "picom"
+        "i3lock"
         "feh"
         "xwinwrap-git"
         "dex"
+        "libnotify"
+        "xautolock"
         "xbindkeys"
         "xclip"
+        "xsel"
+        "xdotool"
         "clipnotify"
         "brightnessctl"
         "playerctl"
@@ -103,16 +105,20 @@ function install_requirements_archlinux() {
         "xdg-utils"
         "xdg-desktop-portal"
         "xdg-desktop-portal-gtk"
+        "xdg-desktop-portal-kde"
         "network-manager-applet"
         "pasystray"
         "blueman"
+        "qt5ct"
+        "qt6ct"
     )
 
     local themes_icons_fonts=(
+        "breeze"
         "breeze-gtk"
+        "breeze-icons"
         "adwaita-icon-theme"
         "adwaita-icon-theme-legacy"
-        "breeze-icons"
         "papirus-icon-theme"
         "ttf-fira-code"
         "ttf-fira-mono"
@@ -160,6 +166,7 @@ function install_requirements_archlinux() {
         "pipewire-pulse"
         "wireplumber"
         "mpv"
+        "ffmpeg"
     )
 
     local ocr=(
@@ -218,12 +225,12 @@ function install_requirements_archlinux() {
     # cbatticon \ # not needed, unless it is being installed in a notebook
     # floorp-bin # not sure if install floorp from AUR or flatpak...
 
-    # flatpak remote-add --user flathub https://flathub.org/repo/flathub.flatpakrepo
     # flatpak install --noninteractive com.valvesoftware.Steam
 
     flatpak install --noninteractive --system \
         com.github.tchx84.Flatseal \
         one.ablaze.floorp \
+        eu.betterbird.Betterbird \
         com.belmoussaoui.Authenticator \
         com.usebottles.bottles \
         it.mijorus.gearlever
@@ -261,6 +268,15 @@ function configure_zdotdir_var() {
 }
 
 function install_config() {
+    local dir_dest="${1%/*}"
+    if [ ! -d "$dir_dest" ]; then
+        mkdir -p "$dir_dest"
+    fi
+    local file_src="$2"
+    if [ ! -f "$file_src" ] && [ ! -d "$file_src" ] && [ ! -L "$file_src" ]; then
+        echo "Source file or directory '$file_src' does not exist."
+        return 1
+    fi
     if [ "$MODE" = "copy" ]; then
         if [ -f "$1" ] || [ -d "$1" ] || [ -L "$1" ]; then
             if question_y_n "$1 configuration already exists. Overwrite?"; then
@@ -291,32 +307,20 @@ function is_os_archlinux() {
 }
 
 function enable_services() {
-    if [ "$AUTO_YES" = true ]; then
-        sudo systemctl enable lightdm.service
+    if question_y_n "Do you want to enable sddm, bluetooth, NetworkManager, pipewire and wireplumber services?"; then
+        sudo systemctl enable sddm.service
         sudo systemctl enable bluetooth.service
         sudo systemctl enable NetworkManager.service
         systemctl --user enable pipewire.service
         systemctl --user enable pipewire-pulse.service
         systemctl --user enable wireplumber.service
-    else
-        if question_y_n "Do you want to enable lightdm, bluetooth, NetworkManager, pipewire and wireplumber services?"; then
-            sudo systemctl enable lightdm.service
-            sudo systemctl enable bluetooth.service
-            sudo systemctl enable NetworkManager.service
-            systemctl --user enable pipewire.service
-            systemctl --user enable pipewire-pulse.service
-            systemctl --user enable wireplumber.service
-        fi
     fi
 }
 
 function generate_locales() {
-    if [ "$AUTO_YES" = true ]; then
-        temp_dir=$(mktemp -d)
-        cp /etc/locale.gen "$temp_dir/locale.gen"
-        sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' "$temp_dir/locale.gen"
-        sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' "$temp_dir/locale.gen"
-        sudo cp "$temp_dir/locale.gen" /etc/locale.gen
+    if question_y_n "Do you want to generate locales?"; then
+        sudo cp "/etc/locale.gen" "/etc/locale.gen.bak"
+        sudo sed -i -r "s/^[ ]*#[ ]*(en_US.UTF-8[ ]+UTF-8|pt_BR.UTF-8[ ]+UTF-8)/\1/" "/etc/locale.gen"
         sudo locale-gen
         sudo localectl set-locale LANG=en_US.UTF-8
         sudo localectl set-locale LC_CTYPE=pt_BR.UTF-8
@@ -331,25 +335,6 @@ function generate_locales() {
         sudo localectl set-locale LC_TELEPHONE=pt_BR.UTF-8
         sudo localectl set-locale LC_MEASUREMENT=pt_BR.UTF-8
         sudo localectl set-locale LC_IDENTIFICATION=pt_BR.UTF-8
-    else
-        if question_y_n "Do you want to generate locales?"; then
-            sudo sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
-            sudo sed -i 's/#pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen
-            sudo locale-gen
-            sudo localectl set-locale LANG=en_US.UTF-8
-            sudo localectl set-locale LC_CTYPE=pt_BR.UTF-8
-            sudo localectl set-locale LC_NUMERIC=pt_BR.UTF-8
-            sudo localectl set-locale LC_TIME=pt_BR.UTF-8
-            sudo localectl set-locale LC_COLLATE=pt_BR.UTF-8
-            sudo localectl set-locale LC_MONETARY=pt_BR.UTF-8
-            sudo localectl set-locale LC_MESSAGES=en_US.UTF-8
-            sudo localectl set-locale LC_PAPER=pt_BR.UTF-8
-            sudo localectl set-locale LC_NAME=pt_BR.UTF-8
-            sudo localectl set-locale LC_ADDRESS=pt_BR.UTF-8
-            sudo localectl set-locale LC_TELEPHONE=pt_BR.UTF-8
-            sudo localectl set-locale LC_MEASUREMENT=pt_BR.UTF-8
-            sudo localectl set-locale LC_IDENTIFICATION=pt_BR.UTF-8
-        fi
     fi
 }
 
@@ -463,7 +448,6 @@ install_config "${dot_config_path}"/kitty "${DOTFILES_INSTALL_PATH}"/.config/kit
 install_config "${dot_config_path}"/luarocks "${DOTFILES_INSTALL_PATH}"/.config/luarocks
 install_config "${dot_config_path}"/npm "${DOTFILES_INSTALL_PATH}"/.config/npm
 install_config "${dot_config_path}"/nvim "${DOTFILES_INSTALL_PATH}"/.config/nvim
-install_config "${dot_config_path}"/pcmanfm "${DOTFILES_INSTALL_PATH}"/.config/pcmanfm
 install_config "${dot_config_path}"/picom "${DOTFILES_INSTALL_PATH}"/.config/picom
 install_config "${dot_config_path}"/rofi "${DOTFILES_INSTALL_PATH}"/.config/rofi
 install_config "${dot_config_path}"/spotify-player "${DOTFILES_INSTALL_PATH}"/.config/spotify-player

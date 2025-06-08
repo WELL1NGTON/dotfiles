@@ -5,7 +5,6 @@
 local rnotification = require("ruled.notification")
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
--- xresources.set_dpi(96)
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")

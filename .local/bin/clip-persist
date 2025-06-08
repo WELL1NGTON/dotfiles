@@ -18,19 +18,28 @@ cleanup() {
 
 trap cleanup EXIT
 
+if [ -f "$LOCKFILE" ]; then
+    OLD_PID=$(cat "$LOCKFILE")
+    echo "Lock file exists: $LOCKFILE"
+    if ps -p $OLD_PID >/dev/null; then
+        echo "Script is already running with PID $OLD_PID."
+        exit 1
+    else
+        echo "Removing stale lock file with PID $OLD_PID."
+        rm -f "$LOCKFILE"
+    fi
+fi
+
 # Use flock to ensure only one instance of the script runs
 exec 200>"$LOCKFILE"
-if ! flock -n 200; then
-    echo "clip-persist is already running."
-    exit 1
-fi
+echo $$ >"$LOCKFILE"
 
 while clipnotify; do
     if [ -n "$BG_PID" ] && kill -0 "$BG_PID" 2>/dev/null; then
         kill "$BG_PID" 2>/dev/null
     fi
 
-    CONTENT_TYPE=$(xclip -o -selection clipboard -t TARGETS 2>/dev/null | grep -m 1 "text/plain")
+    CONTENT_TYPE=$(xclip -o -selection clipboard -t TARGETS 2>/dev/null | grep -m 1 "text/plain\|UTF8_STRING")
     if [ -n "$CONTENT_TYPE" ]; then
         xclip -o -selection clipboard | xclip -i -selection clipboard
     fi

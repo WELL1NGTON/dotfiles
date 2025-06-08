@@ -81,9 +81,7 @@ local awesome_theme = gears.filesystem.get_themes_dir() .. "mytheme/theme.lua"
 if not gfs.file_readable(awesome_theme) then
     awesome_theme = "/usr/share/awesome/themes/default/theme.lua"
 end
--- beautiful.xresources.set_dpi(96)
 beautiful.init(awesome_theme)
--- beautiful.xresources.set_dpi(96)
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty"
@@ -143,21 +141,21 @@ local my_awesome_menu = {
 -- icons specification: https://specifications.freedesktop.org/icon-naming-spec/latest/
 -- can check icons installing package gtk3-demos and opening gtk3-icon-browser
 local power_menu = {
-    { "lock",      function() awful.spawn({ "light-locker-command", "-l" }) end, get_icon_path("system-lock-screen") },
-    { "sleep",     function() awful.spawn({ "systemctl", "sleep" }) end,         get_icon_path("preferences-desktop-screensaver-symbolic") },
-    { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,       get_icon_path("system-suspend") },
-    { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,     get_icon_path("system-hibernate") },
-    { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,        get_icon_path("system-reboot") },
-    { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,      get_icon_path("system-shutdown") },
+    { "lock",      function() awful.spawn({ "i3lock", "--pointer=default" }) end, get_icon_path("system-lock-screen") },
+    { "sleep",     function() awful.spawn({ "systemctl", "sleep" }) end,          get_icon_path("preferences-desktop-screensaver-symbolic") },
+    { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,        get_icon_path("system-suspend") },
+    { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,      get_icon_path("system-hibernate") },
+    { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,         get_icon_path("system-reboot") },
+    { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,       get_icon_path("system-shutdown") },
 }
 local applications_menu = {
-    { "app launcher",   function() awful.spawn("rofi -show drun -no-click-to-exit") end,       get_icon_path("applications-other") },
-    { "editor",         editor_cmd,                                                            get_icon_path("text-editor") },
-    { "file manager",   function() awful.spawn("pcmanfm") end,                                 get_icon_path("file-manager") },
-    { "screenshot",     function() awful.spawn({ "flameshot", "gui" }) end,                    get_icon_path("flameshot") },
-    { "screenshot ocr", function() awful.spawn({ "flameshot-ocr" }) end,                       get_icon_path("flameshot") },
-    { "terminal",       terminal,                                                              get_icon_path("kitty") },
-    { "web browser",    function() awful.spawn({ "flatpak", "run", "one.ablaze.floorp" }) end, get_icon_path("browser") },
+    { "app launcher",   function() awful.spawn("rofi -show drun -no-click-to-exit") end,                  get_icon_path("applications-other") },
+    { "editor",         editor_cmd,                                                                       get_icon_path("text-editor") },
+    { "file manager",   function() awful.spawn("pcmanfm") end,                                            get_icon_path("file-manager") },
+    { "screenshot",     function() awful.spawn({ "flameshot", "gui" }) end,                               get_icon_path("flameshot") },
+    { "screenshot ocr", function() awful.spawn({ os.getenv("HOME") .. "/.local/bin/flameshot-ocr" }) end, get_icon_path("flameshot") },
+    { "terminal",       terminal,                                                                         get_icon_path("kitty") },
+    { "web browser",    function() awful.spawn({ "flatpak", "run", "one.ablaze.floorp" }) end,            get_icon_path("browser") },
 }
 
 local my_main_menu = awful.menu({
@@ -419,6 +417,12 @@ awful.keyboard.append_global_keybindings({
     awful.key({ modkey, "Shift" }, "p", function()
         menubar.show()
     end, { description = "show the menubar", group = "launcher" }),
+    awful.key({ modkey, "Control" }, "p", function()
+        awful.spawn("rofi-rbw")
+    end, { description = "show the menubar", group = "launcher" }),
+    awful.key({ modkey, "Control" }, "o", function()
+        awful.spawn({ terminal, "-e", "cotp" })
+    end, { description = "show the menubar", group = "launcher" }),
     awful.key({ modkey }, "p", function()
         awful.spawn("rofi -show drun")
     end, { description = "show rofi as launcher", group = "launcher" }),
@@ -445,10 +449,10 @@ awful.keyboard.append_global_keybindings({
         awful.spawn({ "flameshot", "gui" })
     end, { description = "take a screenshot with flameshot", group = "awesome" }),
     awful.key({ modkey, "Control" }, "s", function()
-        awful.spawn({ "flameshot-ocr" })
+        awful.spawn(os.getenv("HOME") .. "/.local/bin/" .. "flameshot-ocr")
     end, { description = "screenshot ocr to clip", group = "awesome" }),
     awful.key({ modkey }, "Escape", function()
-        awful.spawn.easy_async({ "light-locker-command", "-l" })
+        awful.spawn({ "i3lock", "--pointer=default" })
     end, { description = "lock the screen with lighdm", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "Escape", function()
         awful.spawn("rofi -show p -modi p:rofi-power-menu")
@@ -865,6 +869,27 @@ ruled.client.connect_signal("request::rules", function()
         },
         properties = { screen = 1, tag = "7", floating = false },
     })
+    -- Rules for xwinwrap "wallpaper"
+    ruled.client.append_rule({
+        id         = "xwinwrap",
+        rule_any   = { class = { "xwinwrap" } },
+        properties = {
+            floating             = true,
+            below                = true,
+            ontop                = false,
+            focusable            = false,
+            skip_taskbar         = true,
+            sticky               = true,
+            titlebars_enabled    = false,
+            requests_no_titlebar = true,
+            x                    = 0,
+            y                    = 0,
+            width                = awful.screen.focused().geometry.width,
+            height               = awful.screen.focused().geometry.height,
+            border_width         = 0,
+            type                 = "desktop",
+        }
+    })
 end)
 -- }}}
 
@@ -1007,7 +1032,6 @@ local autorun_apps = {
     os.getenv("HOME") .. "/.local/bin/set-wallpaper",
     os.getenv("HOME") .. "/.local/bin/set-animated-wallpaper",
 }
---awful.spawn({ "systemd-run", "--user", "--unit", "light-locker", "light-locker" })
 
 -- List of apps to start once on start-up but startup notification protocol is
 -- not supported, and therefore the startup_id required by spawn.once and
