@@ -1,10 +1,16 @@
 #!/bin/zsh
 
+: "${ARCHNEWS_DAYS:=7}"
+: "${ARCHNEWS_CACHE:=$HOME/.cache/archlinux-news}"
+: "${ARCHNEWS_CACHE_LIFETIME:=86400}"
+: "${ARCHNEWS_SHORT:=$ARCHNEWS_CACHE/archnews_short.txt}"
+: "${ARCHNEWS_FULL:=$ARCHNEWS_CACHE/archnews_full.txt}"
+
 function is_file_outdated(){
     local file_path=$1
     local file_lifetime=$2
     local now=$(date +%s)
-    local last_update=$(stat -c %Y $ARCHNEWS_SHORT)
+    local last_update=$(stat -c %Y $file_path)
     local diff=$((now - last_update))
     if [ $diff -gt $file_lifetime ]; then
         return 0
@@ -16,7 +22,6 @@ function is_file_outdated(){
 function update_archnews() {
     local file_path=$1
     local full_data=${2:-false}
-    echo "Updating Arch Linux News... (${file_path}) $2"
     mkdir -p $ARCHNEWS_CACHE
     local arg_exec=Pww
     if [ $full_data = true ]; then
@@ -24,7 +29,14 @@ function update_archnews() {
     else
         arg_exec="${arg_exec}q"
     fi
-    yay -$arg_exec > $file_path # either yay -Pww or yay -Pwwc
+    local tmp_file=$(mktemp)
+    if yay -$arg_exec > $tmp_file && [ -s $tmp_file ]; then
+        mv $tmp_file $file_path
+    else
+        echo "Failed to update archnews: yay command failed or output is empty."
+        rm -f $tmp_file
+        return 1
+    fi
 }
 
 function print_archnews() {
@@ -45,7 +57,7 @@ function print_archnews() {
         echo ""
         local green="\033[0;32m"
         local no_color="\033[0m"
-        echo -e "${green}Arch Linux News in the last $days_check days:${no_color}"
+        echo -e "${green}Arch Linux News from the last $days_check days:${no_color}"
         for i in "${arr[@]}"; do
             echo $i
         done
@@ -85,18 +97,39 @@ function print_archnews_complete() {
         fi
     done<$ARCHNEWS_FULL
     if [ $count -eq 0 ]; then
-        echo "No news in the last $days_check days."
+        echo "No recent news ($days_check days)"
     fi
     echo ""
     echo "For more information visit: https://archlinux.org"
 }
 
-if command -v yay &> /dev/null; then
-    if [[ ! -f $ARCHNEWS_SHORT || $(is_file_outdated $ARCHNEWS_SHORT $ARCHNEWS_CACHE_LIFETIME) ]]; then
-        update_archnews $ARCHNEWS_SHORT false &!
+function update_all_archnews() {
+    local archnews_cache_dir="/home/wellington/.cache/archlinux-news/"
+    local was_short_updated=false
+    local delay_seconds=60
+    if [[ ! -f $ARCHNEWS_SHORT ]] || is_file_outdated $ARCHNEWS_SHORT $ARCHNEWS_CACHE_LIFETIME; then
+        touch $ARCHNEWS_SHORT # update timestamp so other terminals don't try to update it
+        update_archnews $ARCHNEWS_SHORT false
+        was_short_updated=true
     fi
-    if [[ ! -f $ARCHNEWS_FULL || $(is_file_outdated $ARCHNEWS_FULL $ARCHNEWS_CACHE_LIFETIME) ]]; then
-        update_archnews $ARCHNEWS_FULL true &!
+    if [[ ! -f $ARCHNEWS_FULL ]] || is_file_outdated $ARCHNEWS_FULL $ARCHNEWS_CACHE_LIFETIME; then
+        if $was_short_updated; then
+            sleep $delay_seconds
+        fi
+        touch $ARCHNEWS_FULL # update timestamp so other terminals don't try to update it
+        update_archnews $ARCHNEWS_FULL true
+    fi
+}
+
+if [ ! -d "${ARCHNEWS_CACHE}" ]; then
+    echo "${ARCHNEWS_CACHE}/ directory does not exist. Creating it now..."
+    mkdir -p ${ARCHNEWS_CACHE}
+fi
+
+if command -v yay &> /dev/null; then
+    if [[ -z ${_ARCHNEWS_UPDATER_SPAWNED:-} ]]; then
+        export _ARCHNEWS_UPDATER_SPAWNED=1
+        nohup zsh -c 'source ~/.config/zsh/arch-scripts.zsh; update_all_archnews' >/dev/null 2>&1 &!
     fi
     print_archnews
 fi

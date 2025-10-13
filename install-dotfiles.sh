@@ -85,6 +85,8 @@ function install_requirements_archlinux() {
     fi
 
     local display_and_desktop_environment=(
+        # "xlibre-input-libinput"
+        # "xlibre-server"
         "sddm"
         "picom"
         "i3lock"
@@ -92,7 +94,12 @@ function install_requirements_archlinux() {
         "xwinwrap-git"
         "dex"
         "libnotify"
-        "xautolock"
+        # "xautolock"
+        "xorg-xhost"
+        "xscreensaver"
+        "xprintidle"
+        "betterlockscreen"
+        "xidlehook"
         "xbindkeys"
         "xclip"
         "xsel"
@@ -141,6 +148,11 @@ function install_requirements_archlinux() {
         "awesome-git"
         "kitty"
         "pcmanfm-gtk3"
+        "libgsf"
+        "ffmpegthumbnailer"
+        "evince"
+        "file-roller"
+        "ristretto"
         "flameshot"
     )
 
@@ -205,6 +217,20 @@ function install_requirements_archlinux() {
         "glib2"
         "tk"
         "flatpak"
+        "imagemagick"
+        "pv"
+        "curl"
+        "wget"
+        "ncdu"
+        "acl"
+        "gvfs"
+        "udisks2"
+        "udisks2-btrfs"
+        "7zip"
+        "xdg-user-dirs"
+        "eza"
+        "jq"
+        "yq"
     )
 
     local packages_to_install=(
@@ -311,6 +337,7 @@ function enable_services() {
         sudo systemctl enable sddm.service
         sudo systemctl enable bluetooth.service
         sudo systemctl enable NetworkManager.service
+        sudo systemctl enable betterlockscreen@$USER
         systemctl --user enable pipewire.service
         systemctl --user enable pipewire-pulse.service
         systemctl --user enable wireplumber.service
@@ -335,6 +362,7 @@ function generate_locales() {
         sudo localectl set-locale LC_TELEPHONE=pt_BR.UTF-8
         sudo localectl set-locale LC_MEASUREMENT=pt_BR.UTF-8
         sudo localectl set-locale LC_IDENTIFICATION=pt_BR.UTF-8
+        sudo localectl set-x11-keymap us,br pc104,pc104 intl,abnt2 grp:alt_caps_toggle
     fi
 }
 

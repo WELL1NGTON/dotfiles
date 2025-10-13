@@ -2,3 +2,4 @@
 .zcompdump*
 *.zwc
 .config/**/*.local
+.config/fastfetch/*.gif

@@ -40,6 +40,14 @@ naughty.connect_signal("request::display_error", function(message, startup)
 end)
 -- }}}
 
+-- awesome.connect_signal("startup", function()
+--     for _, c in ipairs(client.get()) do
+--         if c.class == "xwinwrap" or c.class == "Xwinwrap" or c.name == "xwinwrap" then
+--             c:lower()
+--         end
+--     end
+-- end)
+
 -- {{{ Variable definitions
 
 -- TODO: Find a better place for helper methods like fix_startup_id
@@ -85,7 +93,15 @@ beautiful.init(awesome_theme)
 
 -- This is used later as the default terminal and editor to run.
 local terminal = "kitty"
-local editor = os.getenv("EDITOR") or "nvim"
+local editor = os.getenv("EDITOR") or function()
+    local editors = { "nvim", "vim", "emacs", "nano" }
+    for _, e in ipairs(editors) do
+        if awful.util.file_readable("/usr/bin/" .. e) then
+            return e
+        end
+    end
+    return "nvim" -- fallback to nvim if none of the others are found
+end
 local editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -141,16 +157,19 @@ local my_awesome_menu = {
 -- icons specification: https://specifications.freedesktop.org/icon-naming-spec/latest/
 -- can check icons installing package gtk3-demos and opening gtk3-icon-browser
 local power_menu = {
-    { "lock",      function() awful.spawn({ "i3lock", "--pointer=default" }) end, get_icon_path("system-lock-screen") },
-    { "sleep",     function() awful.spawn({ "systemctl", "sleep" }) end,          get_icon_path("preferences-desktop-screensaver-symbolic") },
-    { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,        get_icon_path("system-suspend") },
-    { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,      get_icon_path("system-hibernate") },
-    { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,         get_icon_path("system-reboot") },
-    { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,       get_icon_path("system-shutdown") },
+    { "lock",      function() awful.spawn({ "betterlockscreen", "--lock", "dim" }) end, get_icon_path("system-lock-screen") },
+    { "logout",    function() awesome.quit() end,                                       get_icon_path("system-log-out") },
+    { "sleep",     function() awful.spawn({ "systemctl", "sleep" }) end,                get_icon_path("preferences-desktop-screensaver-symbolic") },
+    { "suspend",   function() awful.spawn({ "systemctl", "suspend" }) end,              get_icon_path("system-suspend") },
+    { "hibernate", function() awful.spawn({ "systemctl", "hibernate" }) end,            get_icon_path("system-hibernate") },
+    { "reboot",    function() awful.spawn({ "systemctl", "reboot" }) end,               get_icon_path("system-reboot") },
+    { "shutdown",  function() awful.spawn({ "systemctl", "poweroff" }) end,             get_icon_path("system-shutdown") },
 }
 local applications_menu = {
     { "app launcher",   function() awful.spawn("rofi -show drun -no-click-to-exit") end,                  get_icon_path("applications-other") },
+    { "system monitor", function() awful.spawn({ terminal, "-e", "btop" }) end,                           get_icon_path("utilities-system-monitor") },
     { "editor",         editor_cmd,                                                                       get_icon_path("text-editor") },
+    { "passwords",      function() awful.spawn("rofi-rbw") end,                                           get_icon_path("preferences-desktop-keyboard-shortcuts") },
     { "file manager",   function() awful.spawn("pcmanfm") end,                                            get_icon_path("file-manager") },
     { "screenshot",     function() awful.spawn({ "flameshot", "gui" }) end,                               get_icon_path("flameshot") },
     { "screenshot ocr", function() awful.spawn({ os.getenv("HOME") .. "/.local/bin/flameshot-ocr" }) end, get_icon_path("flameshot") },
@@ -167,8 +186,8 @@ local my_main_menu = awful.menu({
     theme = {
         width = dpi(150),
         height = dpi(24),
-        border_width = dpi(2),
-        border_color = "#737dcc",
+        border_width = beautiful.border_width,
+        border_color = beautiful.border_color_active,
         font = beautiful.menu_font,
     },
 })
@@ -194,8 +213,8 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Table of layouts to cover with awful.layout.inc, order matters.
 tag.connect_signal("request::default_layouts", function()
     awful.layout.append_default_layouts({
-        awful.layout.suit.spiral.dwindle,
         awful.layout.suit.tile,
+        awful.layout.suit.spiral.dwindle,
         awful.layout.suit.tile.bottom,
         awful.layout.suit.magnifier,
         awful.layout.suit.floating,
@@ -452,13 +471,13 @@ awful.keyboard.append_global_keybindings({
         awful.spawn(os.getenv("HOME") .. "/.local/bin/" .. "flameshot-ocr")
     end, { description = "screenshot ocr to clip", group = "awesome" }),
     awful.key({ modkey }, "Escape", function()
-        awful.spawn({ "i3lock", "--pointer=default" })
+        awful.spawn({ "betterlockscreen", "--lock", "dim" })
     end, { description = "lock the screen with lighdm", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "Escape", function()
         awful.spawn("rofi -show p -modi p:rofi-power-menu")
     end, { description = "show power menu", group = "awesome" }),
     awful.key({ "Control", "Shift" }, "Escape", function()
-        awful.spawn({ terminal, "-e", "bpytop" })
+        awful.spawn({ terminal, "-e", "btop" })
     end, { description = "show power menu", group = "awesome" }),
     awful.key({ modkey }, ".", function()
         awful.spawn({ "rofi", "-show", "emoji", "-modi", "emoji" })
@@ -729,25 +748,25 @@ ruled.client.connect_signal("request::rules", function()
         },
         properties = {
             floating = true,
-            -- ontop = true,
-            focus = false,
-            focusable = false,
+            -- -- ontop = true,
+            -- focus = false,
+            -- focusable = false,
             titlebars_enabled = false,
             requests_no_titlebar = true,
-            -- above = true,
-            honor_padding = false,
-            honor_workarea = false,
-            x = 0,
-            y = 0,
-            width = 2560,
-            height = 1440,
+            -- -- above = true,
+            -- honor_padding = false,
+            -- honor_workarea = false,
+            -- x = 0,
+            -- y = 0,
+            -- width = 2560,
+            -- height = 1440,
             skip_taskbar = true,
-            size_hints_honor = false,
+            -- size_hints_honor = false,
             dockable = false,
-            is_fixed = true,
-            immobilized_vertical = true,
-            immobilized_horizontal = true,
-            modal = true,
+            -- is_fixed = true,
+            -- immobilized_vertical = true,
+            -- immobilized_horizontal = true,
+            -- modal = true,
             role = "overlay",
             -- fullscreen = true,
             border_width = 0,
@@ -834,7 +853,17 @@ ruled.client.connect_signal("request::rules", function()
     })
     -- Set Thunderbird to always map on the tag named "8" on screen 1.
     ruled.client.append_rule({
-        rule = { class = "thunderbird" },
+        rule_any = {
+            class = {
+                "thunderbird",
+                "Mail",
+                "betterbird",
+                "eu.betterbird.Betterbird",
+            },
+            name = {
+                "*Betterbird*"
+            }
+        },
         properties = { screen = 1, tag = "8" },
     })
     -- Set Steam to always map on the tag named "9" on screen 1.
@@ -871,23 +900,41 @@ ruled.client.connect_signal("request::rules", function()
     })
     -- Rules for xwinwrap "wallpaper"
     ruled.client.append_rule({
-        id         = "xwinwrap",
-        rule_any   = { class = { "xwinwrap" } },
+        rule_any   = { 
+            class = { 
+                "xwinwrap",
+                "Xwinwrap"
+            },
+            name = { 
+                "xwinwrap",
+                "Xwinwrap"
+            },
+            -- Sadly I couldn't get it to work with only class or name... just type works
+            -- TODO: find a better way to identify xwinwrap windows
+            type = { 
+                "desktop"
+            }
+        },
         properties = {
-            floating             = true,
-            below                = true,
-            ontop                = false,
-            focusable            = false,
-            skip_taskbar         = true,
-            sticky               = true,
-            titlebars_enabled    = false,
-            requests_no_titlebar = true,
-            x                    = 0,
-            y                    = 0,
-            width                = awful.screen.focused().geometry.width,
-            height               = awful.screen.focused().geometry.height,
-            border_width         = 0,
-            type                 = "desktop",
+            floating                = true,
+            below                   = true,
+            ontop                   = false,
+            focusable               = false,
+            skip_taskbar            = true,
+            sticky                  = true,
+            titlebars_enabled       = false,
+            requests_no_titlebar    = true,
+            x                       = 0,
+            y                       = 0,
+            width                   = awful.screen.focused().geometry.width,
+            height                  = awful.screen.focused().geometry.height,
+            size_hints_honor        = false,
+            dockable                = false,
+            is_fixed                = true,
+            immobilized_vertical    = true,
+            immobilized_horizontal  = true,
+            border_width            = 0,
+            type                    = "desktop",
         }
     })
 end)
@@ -949,9 +996,8 @@ ruled.notification.connect_signal("request::rules", function()
             screen = awful.screen.preferred,
             implicit_timeout = 3,
             position = "bottom_right",
-            border_width = dpi(2),
-            border_color = "#737dcc",
-            opacity = 0.2,
+            border_width = beautiful.border_width,
+            border_color = beautiful.border_color_active,
         },
     })
 end)
@@ -1031,6 +1077,7 @@ local autorun_apps = {
     os.getenv("HOME") .. "/.local/bin/clip-persist",
     os.getenv("HOME") .. "/.local/bin/set-wallpaper",
     os.getenv("HOME") .. "/.local/bin/set-animated-wallpaper",
+    "pgrep xss-lock || xss-lock -- betterlockscreen --lock dim"
 }
 
 -- List of apps to start once on start-up but startup notification protocol is

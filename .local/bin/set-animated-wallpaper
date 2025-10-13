@@ -20,7 +20,12 @@ fi
 sleep 1
 
 if [ -f "$ANIMATED_WALLPAPER" ]; then
-    xwinwrap -ov -g "${width}"x"${height}"+0+0 -- mpv --no-audio --loop --no-osd-bar --osc=no --no-border --stop-screensaver=no --panscan=1.0 --scale=nearest --no-input-default-bindings --no-config --wid=%WID "$ANIMATED_WALLPAPER" &
+    xwinwrap -g "${width}"x"${height}"+0+0 -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- mpv \
+        --no-audio --loop --no-osd-bar --osc=no --no-border \
+        --stop-screensaver=no --panscan=1.0 --scale=nearest \
+        --no-input-default-bindings --no-config --wid=%WID \
+        "$ANIMATED_WALLPAPER" &
 else
     echo "Animated wallpaper not found at $ANIMATED_WALLPAPER"
 fi
+

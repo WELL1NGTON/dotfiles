@@ -1,15 +1,9 @@
-if [ ! -d $(dirname $HISTFILE) ]; then
-    echo "$(dirname $HISTFILE)/ directory does not exist. Creating it now..."
-    mkdir -p $(dirname $HISTFILE)
-fi
+export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+export HISTFILESIZE=10000000
+export HISTSIZE=100000
+export SAVEHIST=50000
 
-distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
-
-if [ "$distro_id" = "arch" ] && [ ! -d "${ARCHNEWS_CACHE}" ] && command -v yay &> /dev/null; then
-    echo "${ARCHNEWS_CACHE}/ directory does not exist. Creating it now..."
-    mkdir -p ${ARCHNEWS_CACHE}
-fi
-
+# TODO: remove from zprofile tldr update
 if command -v tldr &> /dev/null; then
     tldr --update_cache &> /dev/null &!
 fi
@@ -21,10 +15,6 @@ export AWESOME_THEMES_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/awesome/themes"
 export ANDROID_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/android"
 
 # ZSH
-export HISTFILESIZE=10000000
-export HISTSIZE=100000
-export SAVEHIST=50000
-export HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
 export ZSH="${XDG_DATA_HOME:-$HOME/.local/share}/oh-my-zsh"
 export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
 export ZSH_COMPDUMP="$ZSH_CACHE_DIR/.zcompdump"
@@ -32,15 +22,16 @@ export ARCHNEWS_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/archlinux-news"
 export ARCHNEWS_CACHE_LIFETIME=21600
 export ARCHNEWS_SHORT="${ARCHNEWS_CACHE}/short"
 export ARCHNEWS_FULL="${ARCHNEWS_CACHE}/full"
-export ARCHNEWS_DAYS=21
+export ARCHNEWS_DAYS=14
 
 # GTK
 export GTK_THEME="Breeze-Dark"
 export GTK2_RC_FILES="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-2.0/gtkrc"
 
 # QT
-QT_QPA_PLATFORMTHEME=qt5ct
-QT_STYLE_OVERRIDE=Breeze
+# export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_QPA_PLATFORMTHEME=kvantum
+export QT_STYLE_OVERRIDE=kvantum
 
 # xinit
 export XINITRC="${XDG_CONFIG_HOME:-$HOME/.config}/X11/xinitrc"
@@ -115,7 +106,12 @@ export OMNISHARPHOME="${XDG_CONFIG_HOME:-$HOME/.config}/omnisharp"
 export STEAM_FORCE_DESKTOPUI_SCALING=1
 
 # Docker
+# export DOCKER=podman
 export DOCKER_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/docker"
+
+# Minikube
+export MINIKUBE_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/minikube"
+export KUBECONFIG="$MINIKUBE_HOME/profiles/minikube/config"
 
 # cargo
 export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
@@ -128,4 +124,10 @@ export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/creden
 export AWS_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/aws/config"
 
 # w3m
-W3M_DIR="$XDG_STATE_HOME/w3m"
+export W3M_DIR="$XDG_STATE_HOME/w3m"
+
+zprofile_local="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zprofile.local"
+
+if [ -f $zprofile_local ]; then
+    source $zprofile_local
+fi

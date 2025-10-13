@@ -3,4 +3,9 @@
 # this script takes a screenshot and pipes it to tesseract to extract text from
 # sources that aren't trivial to be copied
 
-flameshot gui --raw | tesseract -l por+eng+jap stdin stdout | xclip -in -selection clipboard
+flameshot gui --raw | \
+  magick - -colorspace Gray -density 300 -units PixelsPerInch \
+          -resize 200% -sharpen 0x1 -threshold 70% - | \
+  tesseract --oem 3 --psm 6 -l por+eng+jpn stdin stdout | \
+  xclip -in -selection clipboard
+

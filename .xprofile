@@ -27,7 +27,7 @@ xrdb -load -I"${XDG_CONFIG_HOME:-$HOME/.config}"/X11 "${XDG_CONFIG_HOME:-$HOME/.
 #--- PT-BR ABNT2 ---#
 # setxkbmap -model pc105 -layout br -variant abnt2
 #--- US/BR ---#
-setxkbmap us,br -variant intl,abnt2 -model ,pc105
+setxkbmap us,br -variant intl,abnt2 -model pc104,pc104 -option grp:alt_caps_toggle
 
 # Start xbindkeys with the specified configuration file
 if ! pgrep -x "xbindkeys" >/dev/null; then
@@ -39,7 +39,9 @@ if pgrep -x "lightdm" >/dev/null && ! pgrep -x "light-locker" >/dev/null; then
     light-locker &
 fi
 
-xautolock -time 15 -locker 'systemctl suspend' -notify 600 -notifier 'i3lock | xset dpms force off' &
+# xautolock -time 15 -locker 'systemctl suspend' -notify 600 -notifier 'i3lock | xset dpms force off' &
+# xidlehook --not-when-audio --detect-sleep --timer 1800 'systemctl suspend' '' &
+xidlehook --detect-sleep --timer 1800 'systemctl suspend' '' &
 
 # Update the D-Bus activation environment with the current environment variables
 # dbus-update-activation-environment --all

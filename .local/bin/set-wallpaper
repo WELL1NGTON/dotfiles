@@ -9,4 +9,17 @@ resolution=$(echo "$xrandr_line" | grep -oP '\d+x\d+' | head -n 1)
 width=$(echo "$resolution" | cut -d'x' -f1)
 height=$(echo "$resolution" | cut -d'x' -f2)
 
-feh --bg-fill "https://picsum.photos/${width}/${height}"
+img_path="/run/user/${UID}/wallpaper.jpg"
+
+if [ ! -f "$img_path" ]; then
+  curl --retry 5 --retry-delay 2 -sL "https://picsum.photos/${width}/${height}" -o "$img_path"
+fi
+
+if [ ! -f "$img_path" ] || ! identify "$img_path" >/dev/null 2>&1; then
+  echo "Failed to download a valid wallpaper image."
+  rm -f "$img_path"
+  exit 1
+fi
+
+feh --bg-fill "$img_path" --no-fehbg
+betterlockscreen -u "$img_path"

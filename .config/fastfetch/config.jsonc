@@ -18,15 +18,15 @@
     "colors"
   ],
   "logo": {
-    "type": "small",
-    //"type": "kitty-direct",
-    // "source": "/home/wellington/Pictures/Arch-linux-logo-3338145721.png",
-    "width": 20,
-    "height": 10,
+    "type": "kitty-icat",
+    // Source: View over Japanese Valley in Autumn (Lennart Butz) - https://lennartbutz.artstation.com/projects/L21QKA
+    // curl -o "$(xdg-user-dir PICTURES)/lennart-butz-ukiyo2.gif" "https://cdna.artstation.com/p/assets/images/images/025/249/366/original/lennart-butz-ukiyo2.gif"
+    // ffmpeg -i lennart-butz-ukiyo2.gif -vf "scale=-1:256,palettegen" palette.png
+    // ffmpeg -i lennart-butz-ukiyo2.gif -i palette.png -filter_complex "scale=-1:256[x];[x][1:v]paletteuse" "$(xdg-user-dir PICTURES)/lennart-butz-ukiyo2.profile.gif"
+    "source": "$(xdg-user-dir PICTURES)/lennart-butz-ukiyo2.profile.gif",
+    "width": 36,
     "padding": {
-      "left": 2,
-      "right": 2,
-      "top": 3
+      "top": 1
     }
   }
 }

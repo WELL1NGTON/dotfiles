@@ -1,8 +1,13 @@
 setopt HIST_FIND_NO_DUPS
 setopt INC_APPEND_HISTORY
 
+if [ ! -d $(dirname $HISTFILE) ]; then
+    echo "$(dirname $HISTFILE)/ directory does not exist. Creating it now..."
+    mkdir -p $(dirname $HISTFILE)
+fi
+
 # PATH
-PATH="$HOME/.local/bin:${XDG_DATA_HOME:-$HOME/.local/share}/npm/bin:$PNPM_HOME:$GOPATH/bin:$HOME/.cargo/bin:$HOME/.dotnet/tools:$HOME/.local/share/dotnet/tools:$PATH:/var/lib/flatpak/exports/bin:/var/lib/snapd/snap/bin"
+PATH="$HOME/.local/bin:${XDG_DATA_HOME:-$HOME/.local/share}/npm/bin:$PNPM_HOME:$GOPATH/bin:$HOME/.cargo/bin:$DOTNET_CLI_HOME/.dotnet/tools:$HOME/.local/share/dotnet/tools:$PATH:/var/lib/flatpak/exports/bin:/var/lib/snapd/snap/bin"
 
 ZSH_THEME="spaceship"
 
@@ -27,9 +32,10 @@ plugins=(
   git
   dotnet
   pip
-  docker
-  docker-compose
+  # docker
+  # docker-compose
   firewalld
+  podman
 
   # > source https://github.com/zsh-users/zsh-syntax-highlighting
   zsh-syntax-highlighting
