@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ANIMATED_WALLPAPER="$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif"
+: "${ANIMATED_WALLPAPER:=$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif}"
 
 xrandr_line=$(xrandr | grep -E -m 1 " connected primary| connected")
 resolution=$(echo "$xrandr_line" | grep -oP '\d+x\d+' | head -n 1)
@@ -20,12 +20,21 @@ fi
 sleep 1
 
 if [ -f "$ANIMATED_WALLPAPER" ]; then
-    xwinwrap -g "${width}"x"${height}"+0+0 -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- mpv \
-        --no-audio --loop --no-osd-bar --osc=no --no-border \
-        --stop-screensaver=no --panscan=1.0 --scale=nearest \
-        --no-input-default-bindings --no-config --wid=%WID \
-        "$ANIMATED_WALLPAPER" &
+    xwinwrap -g "${width}"x"${height}"+0+0 -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- \
+             mpv --no-audio --loop --no-osd-bar --osc=no --no-border \
+                 --stop-screensaver=no --panscan=1.0 --scale=nearest \
+                 --no-input-default-bindings --no-config --wid=%WID \
+                 "$ANIMATED_WALLPAPER" &
 else
     echo "Animated wallpaper not found at $ANIMATED_WALLPAPER"
+    gio open "https://www.deviantart.com/kirokaze/art/Lost-Papers-858379921" &
+    notify-send "Animated wallpaper not found" \
+                "$(echo \
+                    "Please download the default 'Lost Papers by Kirokaze' from DeviantArt.\n" \
+                    "Or set ANIMATED_WALLPAPER variable to a valid gif file path.\n" \
+                    "Default path: $ANIMATED_WALLPAPER"
+                )" \
+                --urgency=critical \
+                --icon=dialog-error
 fi
 

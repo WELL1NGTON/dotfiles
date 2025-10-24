@@ -9,7 +9,7 @@ curl -sSL https://raw.githubusercontent.com/WELL1NGTON/dotfiles/refs/heads/maste
 # .config will be overwritten if you use -y.
 # And -m can be "link" or "copy" to indicate if you want to create symlinks or
 # copy the files to ~/.config.
-bash install-dotfiles.sh -m link # -y for skipping confirmation
+bash install-dotfiles.sh -m link -y
 ```
 
 ## Manual install

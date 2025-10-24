@@ -89,7 +89,6 @@ function install_requirements_archlinux() {
         # "xlibre-server"
         "sddm"
         "picom"
-        "i3lock"
         "feh"
         "xwinwrap-git"
         "dex"
