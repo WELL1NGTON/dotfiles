@@ -330,11 +330,14 @@ screen.connect_signal("request::desktop_decoration", function(s)
     s.is_wibar_visible_locked = false
     s.is_wibar_last_vis_manual = false
     s.mywibox_lock_state = wibox.widget {
+	-- "widget" that hides wibar when something fullscreen is open
+	-- workaround for some problems that I created for myself...
         text = "",
         widget = wibox.widget.textbox,
         get_lock_state_text = function()
+	    -- when "locked" it won't change visibility automatically
             if s.is_wibar_visible_locked then
-                return " "
+                return "🔒"
             end
             return ""
         end,

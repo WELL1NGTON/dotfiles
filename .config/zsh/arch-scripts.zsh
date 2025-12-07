@@ -39,7 +39,7 @@ function update_archnews() {
     fi
 }
 
-function print_archnews() {
+function print-archnews() {
     if [[ ! -f $ARCHNEWS_SHORT ]]; then
         return 1
     fi
@@ -64,7 +64,7 @@ function print_archnews() {
     fi
 }
 
-function print_archnews_complete() {
+function print-archnews-complete() {
     if [[ ! -f $ARCHNEWS_FULL ]]; then
         return 1
     fi
@@ -131,5 +131,5 @@ if command -v yay &> /dev/null; then
         export _ARCHNEWS_UPDATER_SPAWNED=1
         nohup zsh -c 'source ~/.config/zsh/arch-scripts.zsh; update_all_archnews' >/dev/null 2>&1 &!
     fi
-    print_archnews
+    print-archnews
 fi
