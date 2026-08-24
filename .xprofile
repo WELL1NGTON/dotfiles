@@ -5,9 +5,9 @@ if command -v nvidia-settings >/dev/null 2>&1 && [ -f "${XDG_CONFIG_HOME:-$HOME/
 fi
 
 # Source zsh dotfiles if they exist
-if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin" ]; then
-    . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin"
-fi
+# if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin" ]; then
+#     . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zlogin"
+# fi
 if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zprofile" ]; then
     . "${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zprofile"
 fi
@@ -45,6 +45,12 @@ xidlehook --detect-sleep --timer 1800 'systemctl suspend' '' &
 
 # Update the D-Bus activation environment with the current environment variables
 # dbus-update-activation-environment --all
+# if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+#     dbus-update-activation-environment --systemd DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS PATH WAYLAND_DISPLAY
+# fi
 if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-    dbus-update-activation-environment --systemd DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS PATH WAYLAND_DISPLAY
+    dbus-update-activation-environment --systemd \
+        DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS PATH WAYLAND_DISPLAY \
+        XDG_CURRENT_DESKTOP DESKTOP_SESSION XDG_DATA_DIRS
+    systemctl --user import-environment DISPLAY XAUTHORITY XDG_SESSION_TYPE XDG_CURRENT_DESKTOP DESKTOP_SESSION
 fi

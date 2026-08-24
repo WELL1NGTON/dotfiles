@@ -39,7 +39,7 @@ function update_archnews() {
     fi
 }
 
-function print-archnews() {
+function _archnews_short() {
     if [[ ! -f $ARCHNEWS_SHORT ]]; then
         return 1
     fi
@@ -64,7 +64,7 @@ function print-archnews() {
     fi
 }
 
-function print-archnews-complete() {
+function _archnews_full() {
     if [[ ! -f $ARCHNEWS_FULL ]]; then
         return 1
     fi
@@ -103,6 +103,37 @@ function print-archnews-complete() {
     echo "For more information visit: https://archlinux.org"
 }
 
+function archnews() {
+    local full_mode=false
+    local days=$ARCHNEWS_DAYS
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -f|--full)
+                full_mode=true
+                shift
+                ;;
+            [0-9]*)
+                days=$1
+                shift
+                ;;
+            *)
+                echo "Usage: archnews [-f|--full] [days]"
+                echo "  -f, --full    Show complete news content"
+                echo "  days          Number of days to look back (default: $ARCHNEWS_DAYS)"
+                return 1
+                ;;
+        esac
+    done
+    
+    if $full_mode; then
+        _archnews_full $days
+    else
+        _archnews_short $days
+    fi
+}
+
 function update_all_archnews() {
     local archnews_cache_dir="/home/wellington/.cache/archlinux-news/"
     local was_short_updated=false
@@ -131,5 +162,5 @@ if command -v yay &> /dev/null; then
         export _ARCHNEWS_UPDATER_SPAWNED=1
         nohup zsh -c 'source ~/.config/zsh/arch-scripts.zsh; update_all_archnews' >/dev/null 2>&1 &!
     fi
-    print-archnews
+    archnews
 fi

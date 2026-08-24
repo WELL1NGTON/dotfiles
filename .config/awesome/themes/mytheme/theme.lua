@@ -2,7 +2,7 @@
 -- Default awesome theme --
 ---------------------------
 
-local rnotification = require("ruled.notification")
+local naughty = require("naughty")
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
@@ -27,7 +27,7 @@ end
 
 -- theme.font = "Fira Sans 10"
 theme.font = "Fira Sans 12"
-theme.menu_font = theme.font
+theme.menu_font = "Fira Sans 12"
 
 theme.bg_normal = "#222222"
 theme.bg_focus = "#636ddc"
@@ -42,9 +42,9 @@ theme.fg_minimize = "#ffffff"
 
 theme.useless_gap = dpi(4)
 theme.border_width = dpi(2)
-theme.border_color_normal = "#000000"
-theme.border_color_active = "#636ddc"
-theme.border_color_marked = "#91231c"
+theme.border_normal = "#000000"
+theme.border_focus = "#636ddc"
+theme.border_marked = "#91231c"
 
 -- There are other variable sets
 -- overriding the default one when
@@ -153,12 +153,10 @@ theme.awesome_icon_highlight = themes_path .. "mytheme/archlinux-wm-awesome-high
 theme.icon_theme = nil
 
 -- Set different colors for urgent notifications.
-rnotification.connect_signal("request::rules", function()
-    rnotification.append_rule({
-        rule = { urgency = "critical" },
-        properties = { bg = "#ff0000", fg = "#ffffff" },
-    })
-end)
+naughty.config.presets.critical = {
+    bg = "#ff0000",
+    fg = "#ffffff",
+}
 
 return theme
 

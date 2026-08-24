@@ -56,6 +56,5 @@ fastfetch
 
 distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
 
-if [ "$distro_id" = "arch" ]; then
-  source $ZDOTDIR/arch-scripts.zsh
-fi
+
+export EZA_ICONS_AUTO=true

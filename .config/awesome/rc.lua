@@ -206,7 +206,9 @@ my_launcher:connect_signal("mouse::leave", function()
 end)
 
 -- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+if menubar then
+    menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+end
 -- }}}
 
 -- {{{ Tag layout
@@ -390,7 +392,9 @@ end)
 -- {{{ Mouse bindings
 awful.mouse.append_global_mousebindings({
     awful.button({}, 3, function()
-        my_main_menu:toggle()
+        if my_main_menu then
+           my_main_menu:toggle()
+        end
     end),
     -- awful.button({}, 4, awful.tag.viewprev),
     -- awful.button({}, 5, awful.tag.viewnext),
@@ -403,7 +407,9 @@ awful.mouse.append_global_mousebindings({
 awful.keyboard.append_global_keybindings({
     awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
     awful.key({ modkey }, "w", function()
-        my_main_menu:show()
+        if my_main_menu then
+           my_main_menu:show()
+        end
     end, { description = "show main menu", group = "awesome" }),
     awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
@@ -437,7 +443,9 @@ awful.keyboard.append_global_keybindings({
         awful.screen.focused().mypromptbox:run()
     end, { description = "run prompt", group = "launcher" }),
     awful.key({ modkey, "Shift" }, "p", function()
-        menubar.show()
+        if menubar then
+            menubar.show()
+        end
     end, { description = "show the menubar", group = "launcher" }),
     awful.key({ modkey, "Control" }, "p", function()
         awful.spawn("rofi-rbw")
@@ -474,8 +482,8 @@ awful.keyboard.append_global_keybindings({
         awful.spawn(os.getenv("HOME") .. "/.local/bin/" .. "flameshot-ocr")
     end, { description = "screenshot ocr to clip", group = "awesome" }),
     awful.key({ modkey }, "Escape", function()
-        awful.spawn({ "betterlockscreen", "--lock", "dim" })
-    end, { description = "lock the screen with lighdm", group = "awesome" }),
+        awful.spawn({"loginctl", "lock-session", os.getenv("XDG_SESSION_ID")})
+    end, { description = "lock the screen with loginctl lock-session", group = "awesome" }),
     awful.key({ modkey, "Shift" }, "Escape", function()
         awful.spawn("rofi -show p -modi p:rofi-power-menu")
     end, { description = "show power menu", group = "awesome" }),
@@ -828,8 +836,8 @@ ruled.client.connect_signal("request::rules", function()
         properties = {
             floating = true,
             ontop = true,
-            skip_taskbar = true,
-            sticky = true,
+            -- skip_taskbar = true,
+            -- sticky = true,
         },
     })
 
@@ -903,18 +911,18 @@ ruled.client.connect_signal("request::rules", function()
     })
     -- Rules for xwinwrap "wallpaper"
     ruled.client.append_rule({
-        rule_any   = { 
-            class = { 
+        rule_any   = {
+            class = {
                 "xwinwrap",
                 "Xwinwrap"
             },
-            name = { 
+            name = {
                 "xwinwrap",
                 "Xwinwrap"
             },
             -- Sadly I couldn't get it to work with only class or name... just type works
             -- TODO: find a better way to identify xwinwrap windows
-            type = { 
+            type = {
                 "desktop"
             }
         },
@@ -1080,7 +1088,9 @@ local autorun_apps = {
     os.getenv("HOME") .. "/.local/bin/clip-persist",
     os.getenv("HOME") .. "/.local/bin/set-wallpaper",
     os.getenv("HOME") .. "/.local/bin/set-animated-wallpaper",
-    "pgrep xss-lock || xss-lock -- betterlockscreen --lock dim"
+    ---------------------------- lock screen script --------------------------- --
+    -- XSS-lock: lock screen when the screensaver is activated
+    "xss-lock --transfer-sleep-lock --session " .. os.getenv("XDG_SESSION_ID") .. " -- betterlockscreen --lock dim -- --nofork",
 }
 
 -- List of apps to start once on start-up but startup notification protocol is

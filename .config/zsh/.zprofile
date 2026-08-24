@@ -30,7 +30,7 @@ export GTK2_RC_FILES="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-2.0/gtkrc"
 
 # QT
 # export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_QPA_PLATFORMTHEME=kvantum
+export QT_QPA_PLATFORMTHEME=qt5ct:qt6ct
 export QT_STYLE_OVERRIDE=kvantum
 
 # xinit
@@ -87,9 +87,9 @@ export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
 export PNPM_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/pnpm"
 
 # General
-export TERM=xterm-kitty
-export BROWSER=one.ablaze.floorp
-export MAIL=eu.betterbird.Betterbird
+# export TERM=xterm-kitty
+# export BROWSER=one.ablaze.floorp
+# export MAIL=eu.betterbird.Betterbird
 export EDITOR=nvim
 export CUDA_CACHE_PATH="${XDG_CACHE_HOME:-$HOME/.cache}/nv"
 

@@ -12,5 +12,13 @@ if [ $TERM = "xterm-kitty" ]; then
 fi
 alias xclip="xclip -r -sel clip 1> /dev/null 2> /dev/null"
 
-alias ls='eza --group-directories-first --icons auto'
+if command -v eza &> /dev/null; then
+    alias eza='eza --group-directories-first --group'
+    alias e='eza --group-directories-first --group'
+    alias el='eza --group-directories-first --group -l'
+    alias ea='eza --group-directories-first --group -al'
+    alias et='eza --group-directories-first --group -alT'
+fi
 
+alias myip='curl -s ifconfig.me'
+alias whereami='curl -s ipinfo.io/$(curl -s ifconfig.me) | jq .'
