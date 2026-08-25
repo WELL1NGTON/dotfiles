@@ -52,9 +52,17 @@ eval "$(zoxide init zsh)"
 
 source ${ZDOTDIR:-"$XDG_CONFIG_HOME"/zsh}/aliases.zsh
 
-fastfetch
+
+if [[ "$TERM" == "xterm-kitty" ]]; then
+  fastfetch
+elif then;
+  fastfetch --logo-type builtin --logo arch --logo-width 0
+fi
 
 distro_id=$(awk -F'=' '/^ID=/ {print tolower($2)}' /etc/*-release 2>/dev/null)
 
+if [ "$distro_id" = "arch" ]; then
+  source $ZDOTDIR/arch-scripts.zsh
+fi
 
 export EZA_ICONS_AUTO=true
