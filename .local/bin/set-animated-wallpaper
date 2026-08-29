@@ -1,40 +1,70 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 : "${ANIMATED_WALLPAPER:=$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif}"
 
-xrandr_line=$(xrandr | grep -E -m 1 " connected primary| connected")
-resolution=$(echo "$xrandr_line" | grep -oP '\d+x\d+' | head -n 1)
-width=$(echo "$resolution" | cut -d'x' -f1)
-height=$(echo "$resolution" | cut -d'x' -f2)
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/animated-wallpaper"
+log_file="$state_dir/mpv.log"
+mkdir -p "$state_dir"
 
-xwinwrapid=$(pgrep xwinwrap)
-mpv=$(pgrep --list-full mpv | grep "$ANIMATED_WALLPAPER" | awk '{print $1}')
-if [[ -n "$mpv" ]]; then
-    kill -9 "$mpv"
-fi
-if [[ -n "$xwinwrapid" ]]; then
-    kill -9 "$xwinwrapid"
-fi
+# Stop only wallpaper instances from earlier runs.
+pkill -f "xwinwrap.*mpv.*$(printf '%s' "$ANIMATED_WALLPAPER" | sed 's/[][\\.^$*+?(){}|/]/\\&/g')" 2>/dev/null || true
+pkill -f "mpv.*$(printf '%s' "$ANIMATED_WALLPAPER" | sed 's/[][\\.^$*+?(){}|/]/\\&/g')" 2>/dev/null || true
 
-# sleep for 1 second to ensure the kill command has time to execute
-sleep 1
-
-if [ -f "$ANIMATED_WALLPAPER" ]; then
-    xwinwrap -g "${width}"x"${height}"+0+0 -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- \
-             mpv --no-audio --loop --no-osd-bar --osc=no --no-border \
-                 --stop-screensaver=no --panscan=1.0 --scale=nearest \
-                 --no-input-default-bindings --no-config --wid=%WID \
-                 "$ANIMATED_WALLPAPER" &
-else
-    echo "Animated wallpaper not found at $ANIMATED_WALLPAPER"
-    gio open "https://www.deviantart.com/kirokaze/art/Lost-Papers-858379921" &
-    notify-send "Animated wallpaper not found" \
-                "$(echo \
-                    "Please download the default 'Lost Papers by Kirokaze' from DeviantArt.\n" \
-                    "Or set ANIMATED_WALLPAPER variable to a valid gif file path.\n" \
-                    "Default path: $ANIMATED_WALLPAPER"
-                )" \
-                --urgency=critical \
-                --icon=dialog-error
+if [[ ! -f "$ANIMATED_WALLPAPER" ]]; then
+    notify-send --urgency=critical --icon=dialog-error \
+        "Animated wallpaper not found" \
+        "File not found: $ANIMATED_WALLPAPER"
+    exit 1
 fi
 
+geometry="$(
+    xrandr --current | awk '
+        / connected primary / {
+            for (i = 1; i <= NF; i++)
+                if ($i ~ /^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$/) {
+                    print $i
+                    exit
+                }
+        }
+        / connected / && fallback == "" {
+            for (i = 1; i <= NF; i++)
+                if ($i ~ /^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$/)
+                    fallback = $i
+        }
+        END {
+            if (fallback != "") print fallback
+        }'
+)"
+
+if [[ -z "$geometry" ]]; then
+    notify-send --urgency=critical "Animated wallpaper" \
+        "Could not determine monitor geometry."
+    exit 1
+fi
+
+: > "$log_file"
+
+xwinwrap -g "$geometry" \
+    -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- \
+    mpv \
+        --no-config \
+        --no-audio \
+        --loop-file=inf \
+        --vo=gpu \
+        --gpu-context=x11egl \
+        --hwdec=no \
+        --x11-present=no \
+        --x11-bypass-compositor=never \
+        --scale=nearest \
+        --cscale=nearest \
+        --dscale=nearest \
+        --no-osd-bar \
+        --osc=no \
+        --no-border \
+        --stop-screensaver=no \
+        --panscan=1.0 \
+        --no-input-default-bindings \
+        --wid=%WID \
+        "$ANIMATED_WALLPAPER" \
+    >>"$log_file" 2>&1 &
