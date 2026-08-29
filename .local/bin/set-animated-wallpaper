@@ -1,51 +1,70 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${ANIMATED_WALLPAPER:=$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif}"
+default_wallpaper="$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.mp4"
+source_url="https://www.deviantart.com/kirokaze/art/Lost-Papers-858379921"
+
+: "${ANIMATED_WALLPAPER:=$default_wallpaper}"
 
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/animated-wallpaper"
 log_file="$state_dir/mpv.log"
 mkdir -p "$state_dir"
 
-# Stop only wallpaper instances from earlier runs.
-pkill -f "xwinwrap.*mpv.*$(printf '%s' "$ANIMATED_WALLPAPER" | sed 's/[][\\.^$*+?(){}|/]/\\&/g')" 2>/dev/null || true
-pkill -f "mpv.*$(printf '%s' "$ANIMATED_WALLPAPER" | sed 's/[][\\.^$*+?(){}|/]/\\&/g')" 2>/dev/null || true
-
 if [[ ! -f "$ANIMATED_WALLPAPER" ]]; then
-    notify-send --urgency=critical --icon=dialog-error \
+    echo "Animated wallpaper not found at:"
+    echo "  $ANIMATED_WALLPAPER"
+    echo
+    echo "Download the original Lost Papers wallpaper from:"
+    echo "  $source_url"
+    echo
+    echo "The default script expects an MP4 at:"
+    echo "  $default_wallpaper"
+    echo
+    echo "Example GIF -> lossless H.264 4:4:4 conversion:"
+    echo
+    echo "  ffmpeg -i \"\$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.gif\" \\"
+    echo "    -an -c:v libx264 -preset veryslow -crf 0 -pix_fmt yuv444p -fps_mode vfr \\"
+    echo "    \"\$(xdg-user-dir PICTURES)/wallpapers/lost_papers_by_kirokaze_de7226p.mp4\""
+
+    notify-send \
+        --urgency=critical \
+        --icon=dialog-error \
         "Animated wallpaper not found" \
-        "File not found: $ANIMATED_WALLPAPER"
+        "Expected: $ANIMATED_WALLPAPER
+
+Download Lost Papers by Kirokaze from DeviantArt.
+
+See terminal output for the GIF → MP4 conversion command."
+
+    gio open "$source_url" >/dev/null 2>&1 &
+
     exit 1
 fi
 
+# Get the primary monitor geometry, or fall back to the first connected monitor.
 geometry="$(
-    xrandr --current | awk '
-        / connected primary / {
-            for (i = 1; i <= NF; i++)
-                if ($i ~ /^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$/) {
-                    print $i
-                    exit
-                }
-        }
-        / connected / && fallback == "" {
-            for (i = 1; i <= NF; i++)
-                if ($i ~ /^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$/)
-                    fallback = $i
-        }
-        END {
-            if (fallback != "") print fallback
-        }'
+    xrandr --current |
+        grep -m1 -E ' connected primary| connected' |
+        grep -oE '[0-9]+x[0-9]+\+[0-9]+\+[0-9]+' |
+        head -n1
 )"
 
 if [[ -z "$geometry" ]]; then
-    notify-send --urgency=critical "Animated wallpaper" \
+    echo "Could not determine monitor geometry." >&2
+    notify-send --urgency=critical \
+        "Animated wallpaper" \
         "Could not determine monitor geometry."
     exit 1
 fi
 
+# Stop previous instances of this wallpaper.
+pkill -f "mpv.*${ANIMATED_WALLPAPER}" 2>/dev/null || true
+pkill -x xwinwrap 2>/dev/null || true
+
 : > "$log_file"
 
-xwinwrap -g "$geometry" \
+xwinwrap \
+    -g "$geometry" \
     -ni -nf -b -sp -st -s -un -fs -fdt -argb -d -- \
     mpv \
         --no-config \
@@ -54,11 +73,13 @@ xwinwrap -g "$geometry" \
         --vo=gpu \
         --gpu-context=x11egl \
         --hwdec=no \
-        --x11-present=no \
-        --x11-bypass-compositor=never \
         --scale=nearest \
         --cscale=nearest \
         --dscale=nearest \
+        --interpolation=no \
+        --deband=no \
+        --x11-present=no \
+        --x11-bypass-compositor=never \
         --no-osd-bar \
         --osc=no \
         --no-border \
