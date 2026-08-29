@@ -52,7 +52,6 @@ eval "$(zoxide init zsh)"
 
 source ${ZDOTDIR:-"$XDG_CONFIG_HOME"/zsh}/aliases.zsh
 
-
 if [[ "$TERM" == "xterm-kitty" ]]; then
   fastfetch
 elif then;
@@ -65,4 +64,8 @@ if [ "$distro_id" = "arch" ]; then
   source $ZDOTDIR/arch-scripts.zsh
 fi
 
-export EZA_ICONS_AUTO=true
+zshrc_local = ="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zshrc.local"
+
+if [ -f $zshrc_local ]; then
+    source $zshrc_local
+fi
