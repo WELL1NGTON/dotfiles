@@ -64,7 +64,7 @@ if [ "$distro_id" = "arch" ]; then
   source $ZDOTDIR/arch-scripts.zsh
 fi
 
-zshrc_local = ="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zshrc.local"
+zshrc_local="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}/.zshrc.local"
 
 if [ -f $zshrc_local ]; then
     source $zshrc_local
